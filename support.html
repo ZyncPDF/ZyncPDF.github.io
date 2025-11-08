@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Support Converto and help us maintain our suite of free, private, and open-source PDF tools. Your contribution keeps our services available for everyone.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Us - LuxPDF</title>
+    <link rel="stylesheet" href="styles.css?v=1.1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Favicon and App Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+
+
+    
+ 
+</head>
+
+<body>
+    <header class="header">
+  <div class="container">
+    <a href="index.html" class="logo-link" aria-label="Converto Home">
+      <div class="logo">
+        <img src="logo.png" alt="Converto Logo" class="logo-img">
+        <span class="logo-text">Converto</span>
+      </div>
+    </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Tools</a>
+                <a href="/blog.html" class="nav-link">Blog</a>
+                <a href="/support.html" class="nav-link">Support Us</a>
+            </nav>
+        </div>
+    </header>
+<main class="main">
+  <section class="support-section">
+    <div class="container text-center">
+      <h2 class="section-title">Support Converto</h2>
+      <p class="section-subtitle">
+        Converto is a 100% free, open-source platform built to simplify file conversions — fast, private, and without limits. 
+        Your support keeps our mission alive and fuels future innovation.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="support-grid">
+        <!-- Donor Card -->
+        <div class="support-card">
+          <div class="support-card-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Support With a Donation</h3>
+          <p>
+            Help us keep Converto ad-free, private, and accessible to everyone. Your donation directly supports 
+            maintenance, new tool development, and hosting costs — no middlemen, no data selling.
+          </p>
+          <a href="https://buymeacoffee.com/converto" class="btn btn-primary">Donate Now</a>
+        </div>
+
+        <!-- Sponsor Card -->
+        <div class="support-card">
+          <div class="support-card-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>Become a Sponsor</h3>
+          <p>
+            Get your brand featured on our platform and connect with thousands of developers, students, 
+            and professionals who use Converto daily. Partner with us to build the future of open web tools.
+          </p>
+          <p>Email us: <a href="mailto:adm.converto@gmail.com">adm.converto@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container hall-of-fame">
+      <h3 class="text-center">Our Amazing Supporters 💚</h3>
+      <div class="supporters-list text-center">
+        <p><span class="supporter-name"></span></p>
+
+      </div>
+      <blockquote>
+        Want to see your name or brand here? Join our community of supporters and make Converto better for everyone.
+      </blockquote>
+    </div>
+  </section>
+</main>
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+    <a href="/" class="logo-link" aria-label="Converto Home">
+      <div class="logo">
+        <img src="logo.png" alt="Converto Logo" class="logo-img">
+        <span class="logo-text">Converto</span>
+      </div>
+    </a>
+
+      <div class="footer-privacy">
+        <div class="privacy-badge">
+          <i class="fas fa-lock"></i> View our <a href="terms.html">Terms of Service</a>, 
+          <a href="changelog.html">Changelog</a>, and 
+          <a href="privacy.html">Privacy Policy</a> for full transparency.
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="terms.html" class="footer-link">Terms of Service</a>
+        <a href="changelog.html" class="footer-link">Changelog</a>
+        <a href="privacy.html" class="footer-link">Privacy Policy</a>
+      </div>
+
+      <div class="footer-social">
+        <a href="https://github.com/alanjollyc/ConvertO.git" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.instagram.com/alan._.jolly/" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+
+      <p class="footer-contact">For questions, inquiries, or contributions, email us at: <a href="mailto:adm.converto@gmail.com">adm.converto@gmail.com</a></p>
+      <p class="copyright">&copy; 2025 Converto. All rights reserved.</p>
+
+      <!-- Page Visit Counter -->
+      <div id="visit-counter" class="visit-counter">
+        👀 Total Visits: <span id="visit-count">0</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Client-Side Visit Counter -->
+<script>
+  // Use localStorage as a simple static counter for demo/local use
+  const counterKey = "converto-visit-count";
+  let visitCount = localStorage.getItem(counterKey);
+  if (!visitCount) {
+    visitCount = 1;
+  } else {
+    visitCount = parseInt(visitCount) + 1;
+  }
+  localStorage.setItem(counterKey, visitCount);
+  document.getElementById("visit-count").textContent = visitCount.toLocaleString();
+</script>
+
+
+
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>
+
