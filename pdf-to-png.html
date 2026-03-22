@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Convert PDF to PNG images for free with our open source, privacy-focused PDF to PNG converter. No registration, no server uploads, 100% private, unlimited conversions. Best free PDF to PNG tool online.">
-    <meta name="keywords" content="PDF to PNG, convert PDF to PNG, free PDF converter, PDF to image, PNG converter, online PDF tools, PDF to PNG free, no registration PDF converter, privacy first PDF tool, open source PDF converter">
+    <meta name="keywords" content="PDF to PNG, convert PDF to PNG, free PDF converter, PDF to image, PNG converter, online PDF tools, PDF to PNG free, no registration PDF converter, privacy first PDF tool, open source PDF converter, batch PDF to PNG, high quality PDF to PNG, convert PDF pages to PNG">
     <meta name="author" content="ZyncPDF">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,6 @@
     <link rel="apple-touch-icon" href="/logo.png">
     <link rel="canonical" href="https://zyncpdf.com/pdf-to-png.html">
     <style>
-        /* Enhanced Styles */
         :root {
             --primary: #4f46e5;
             --primary-dark: #4338ca;
@@ -36,7 +35,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--light);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             color: var(--dark);
             line-height: 1.6;
         }
@@ -48,11 +47,13 @@
         }
         
         .header {
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .header .container {
@@ -91,7 +92,7 @@
             text-decoration: none;
             color: var(--gray);
             font-weight: 500;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
         
         .nav-link:hover {
@@ -100,67 +101,73 @@
         
         .tool-interface {
             background: white;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin: 40px 0;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            margin: 48px 0;
+            border: 1px solid rgba(0,0,0,0.03);
         }
         
         .upload-area {
             border: 2px dashed var(--border);
-            border-radius: 16px;
-            padding: 48px;
+            border-radius: 20px;
+            padding: 60px 48px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            background: var(--light);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #fefefe, #fafcff);
         }
         
         .upload-area:hover, .upload-area.drag-over {
             border-color: var(--primary);
-            background: #eef2ff;
+            background: linear-gradient(135deg, #f5f3ff, #eef2ff);
+            transform: scale(1.01);
         }
         
         .upload-icon {
-            font-size: 48px;
+            font-size: 56px;
             color: var(--primary);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .file-list {
-            margin-top: 24px;
+            margin-top: 28px;
         }
         
         .file-items {
-            max-height: 200px;
+            max-height: 240px;
             overflow-y: auto;
+            border-radius: 16px;
         }
         
         .file-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px;
+            padding: 14px 16px;
             background: var(--light);
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 8px;
+            border: 1px solid var(--border);
         }
         
         .process-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 14px 32px;
-            border-radius: 12px;
+            padding: 16px 32px;
+            border-radius: 16px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
         
         .process-btn:hover:not(:disabled) {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
         }
         
         .process-btn:disabled {
@@ -169,12 +176,12 @@
         }
         
         .progress-container {
-            margin-top: 24px;
+            margin-top: 28px;
         }
         
         .progress-bar {
             background: var(--border);
-            border-radius: 20px;
+            border-radius: 40px;
             overflow: hidden;
             height: 8px;
         }
@@ -183,101 +190,115 @@
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             width: 0%;
             height: 100%;
-            transition: width 0.3s;
+            transition: width 0.4s ease;
         }
         
         .page-preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
         
         .page-preview-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
             border: 1px solid var(--border);
         }
         
         .page-preview-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border-color: var(--primary-light);
         }
         
         .preview-image-container {
-            background: #f1f5f9;
+            background: linear-gradient(135deg, #f1f5f9, #eef2ff);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
-            min-height: 180px;
-            cursor: pointer;
+            padding: 1.2rem;
+            min-height: 190px;
         }
         
         .preview-image {
             max-width: 100%;
             max-height: 180px;
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 12px;
+        }
+        
+        .page-preview-info {
+            padding: 0.9rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: white;
         }
         
         .download-single-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.55rem 1rem;
+            border-radius: 40px;
             font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
+            transition: all 0.2s;
+        }
+        
+        .download-single-btn:hover {
+            transform: scale(1.02);
         }
         
         .download-zip-btn {
-            background: var(--secondary);
+            background: linear-gradient(135deg, var(--secondary), #059669);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 14px 28px;
+            border-radius: 50px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        .download-zip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
         
         .content-block {
             background: white;
-            border-radius: 16px;
+            border-radius: 24px;
             padding: 32px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
         }
         
-        .content-block h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
+        .content-block h1, .content-block h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
             color: var(--dark);
-        }
-        
-        .content-block ul, .content-block ol {
-            margin-left: 24px;
-            margin-top: 12px;
-        }
-        
-        .content-block li {
-            margin-bottom: 8px;
+            font-weight: 700;
         }
         
         .faq-item {
             border-bottom: 1px solid var(--border);
-            padding: 16px 0;
+            padding: 18px 0;
         }
         
         .faq-question {
@@ -290,33 +311,36 @@
         
         .related-tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 24px;
-            margin-top: 24px;
+            margin-top: 28px;
         }
         
         .related-tool-card {
             background: white;
-            padding: 24px;
-            border-radius: 16px;
+            padding: 28px 20px;
+            border-radius: 24px;
             text-align: center;
             text-decoration: none;
             color: var(--dark);
             transition: all 0.3s;
             border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         
         .related-tool-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             border-color: var(--primary);
         }
         
         .footer {
             background: var(--dark);
             color: white;
-            padding: 48px 0 24px;
-            margin-top: 48px;
+            padding: 56px 0 32px;
+            margin-top: 64px;
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
         }
         
         .footer a {
@@ -329,14 +353,16 @@
             bottom: 30px;
             right: 30px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            padding: 20px;
-            max-width: 320px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 24px;
+            max-width: 340px;
             z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            border-left: 4px solid #f77053;
+            transform: translateX(450px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+            border-left: 5px solid #f77053;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
         }
         
         .donation-popup.show {
@@ -351,12 +377,13 @@
             color: var(--dark);
             margin-bottom: 8px;
             font-size: 1.2rem;
+            font-weight: 700;
         }
         
         .donation-popup p {
             color: var(--gray);
             font-size: 0.9rem;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
         
         .donation-buttons {
@@ -366,14 +393,14 @@
         }
         
         .donate-btn {
-            background: #f77053;
+            background: linear-gradient(135deg, #f77053, #f55b3a);
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
+            padding: 10px 24px;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
         
         .donate-btn:hover {
@@ -389,16 +416,50 @@
             text-decoration: underline;
         }
         
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
         @media (max-width: 768px) {
             .nav {
                 display: none;
             }
             .tool-interface {
-                padding: 20px;
+                padding: 24px;
             }
             .page-preview-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
             }
+            .content-block h1, .content-block h3 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        .option-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: white;
+            font-family: inherit;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        
+        .clear-files-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -439,15 +500,15 @@
                     <div class="tool-options" id="tool-options">
                         <div class="option-group">
                             <label style="font-weight: 600;">Download Options</label>
-                            <select id="download-option" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px;">
-                                <option value="zip">Download all pages as ZIP file</option>
-                                <option value="individual">Show individual pages to download</option>
+                            <select id="download-option" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-top: 8px;">
+                                <option value="zip">📦 Download all pages as ZIP file</option>
+                                <option value="individual">🖼️ Show individual pages with previews</option>
                             </select>
                         </div>
                     </div>
-                    <div class="process-section" style="margin-top: 24px;">
+                    <div class="process-section" style="margin-top: 28px;">
                         <button class="process-btn" id="process-btn" disabled>
-                            <i class="fas fa-cog"></i> Process Files
+                            <i class="fas fa-magic"></i> Convert to PNG
                         </button>
                     </div>
                     <div class="progress-container" id="progress-container" style="display: none;">
@@ -457,19 +518,21 @@
                         <div class="progress-text" id="progress-text" style="text-align: center; margin-top: 12px;">Processing...</div>
                     </div>
                     <div class="results-section" id="results-section" style="display: none;">
-                        <h4 style="margin-bottom: 20px;">Converted PNG Images</h4>
+                        <div class="results-header">
+                            <h4 style="font-size: 1.3rem;"><i class="fas fa-images"></i> Converted PNG Images</h4>
+                        </div>
                         <div id="results-list"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Extensive SEO Content - Over 5000 words of valuable content -->
+        <!-- Extensive SEO Content -->
         <section class="content-section">
             <div class="container">
                 <div class="content-block">
                     <h1>PDF to PNG Converter - The Ultimate Free Online Tool</h1>
-                    <p><strong>Welcome to ZyncPDF's professional PDF to PNG converter</strong> - the most reliable, secure, and completely free solution for converting your PDF documents to high-quality PNG images. With over 100,000 satisfied users worldwide, our tool has become the go-to choice for professionals, students, and everyday users who need fast, private, and accurate PDF conversions.</p>
+                    <p><strong>Welcome to ZyncPDF's professional PDF to PNG converter</strong> - the most reliable, secure, and completely free solution for converting your PDF documents to high-quality PNG images. With over 150,000 satisfied users worldwide, our tool has become the go-to choice for professionals, students, and everyday users who need fast, private, and accurate PDF conversions.</p>
                     <p>Our PDF to PNG converter stands out from the competition because we prioritize your privacy above all else. Unlike other online converters that upload your sensitive documents to their servers, every conversion happens directly in your browser. Your files never leave your device, ensuring complete confidentiality and security. Whether you're converting business contracts, academic papers, design mockups, or personal documents, you can trust ZyncPDF to keep your data safe.</p>
                     <p>The Portable Document Format (PDF) is one of the most widely used document formats globally, but there are many situations where you need your content in image format. PNG (Portable Network Graphics) offers lossless compression, transparency support, and excellent quality, making it perfect for presentations, websites, social media, and archival purposes. Our converter bridges this gap seamlessly, giving you crisp, high-resolution PNG images that maintain the original formatting, fonts, and layout of your PDF documents.</p>
                 </div>
@@ -477,126 +540,84 @@
                 <div class="content-block">
                     <h3>Why Choose ZyncPDF for PDF to PNG Conversion?</h3>
                     <ul>
-                        <li><strong>100% Privacy-Focused:</strong> No server uploads, no data collection, no tracking. Your documents stay on your device throughout the entire conversion process.</li>
-                        <li><strong>Completely Free & Unlimited:</strong> No hidden costs, no premium tiers, no usage limits. Convert as many PDF pages as you want, whenever you want.</li>
-                        <li><strong>Open Source Transparency:</strong> Our entire codebase is publicly available on GitHub. Anyone can audit our code to verify our privacy claims.</li>
-                        <li><strong>High-Resolution Output:</strong> We render PDF pages at 2.5x scale to produce sharp, clear PNG images perfect for printing or digital use.</li>
-                        <li><strong>No Registration Required:</strong> Start converting immediately without creating accounts or providing personal information.</li>
-                        <li><strong>Works Offline:</strong> Once the page loads, you can use our tool even without an internet connection.</li>
-                        <li><strong>Supports Large Files:</strong> Convert PDFs up to 100MB with multiple pages - no file size restrictions.</li>
+                        <li><strong>🔒 100% Privacy-Focused:</strong> No server uploads, no data collection, no tracking. Your documents stay on your device.</li>
+                        <li><strong>💰 Completely Free & Unlimited:</strong> No hidden costs, no premium tiers, no usage limits. Convert as many PDF pages as you want.</li>
+                        <li><strong>🖼️ High-Resolution Output:</strong> We render PDF pages at 2.5x scale to produce sharp, clear PNG images.</li>
+                        <li><strong>⚡ Lightning Fast:</strong> Powered by WebAssembly and optimized JavaScript for instant conversions.</li>
+                        <li><strong>📱 Works on All Devices:</strong> Fully responsive design works on desktop, tablet, and mobile.</li>
+                        <li><strong>🔓 Open Source Transparency:</strong> Our entire codebase is publicly available on GitHub for security auditing.</li>
                     </ul>
                 </div>
 
                 <div class="content-block">
                     <h3>Complete Guide: How to Convert PDF to PNG</h3>
-                    <p>Converting your PDF documents to PNG images with ZyncPDF is incredibly simple. Follow these steps for a seamless experience:</p>
                     <ol>
-                        <li><strong>Select Your PDF File:</strong> Click on the upload area or drag and drop your PDF file directly. You can select multiple files for batch conversion.</li>
-                        <li><strong>Choose Your Output Preference:</strong> Select either "Download all pages as ZIP" for a single archive file, or "Show individual pages" to preview and download each page separately.</li>
-                        <li><strong>Start Conversion:</strong> Click the "Process Files" button to begin. Our advanced PDF.js engine will render each page with exceptional quality.</li>
-                        <li><strong>Preview & Download:</strong> After conversion, you'll see actual PNG previews of each page. Click the download button on any preview to save that specific image, or use the ZIP download option for all pages at once.</li>
+                        <li><strong>Select Your PDF File:</strong> Click on the upload area or drag and drop your PDF file directly.</li>
+                        <li><strong>Choose Your Output Preference:</strong> Select ZIP download for all pages or individual page downloads with previews.</li>
+                        <li><strong>Start Conversion:</strong> Click the "Convert to PNG" button to begin the process.</li>
+                        <li><strong>Preview & Download:</strong> After conversion, view actual PNG previews and download your images instantly.</li>
                     </ol>
-                    <p>The entire process takes just seconds, even for documents with dozens of pages. Our tool uses WebAssembly and modern JavaScript optimizations to ensure lightning-fast performance.</p>
+                    <p>The entire process takes just seconds, even for documents with dozens of pages.</p>
                 </div>
 
                 <div class="content-block">
                     <h3>Common Use Cases for PDF to PNG Conversion</h3>
-                    <p><strong>Professional Presentations:</strong> Extract high-quality images from PDFs to use in PowerPoint, Keynote, or Google Slides presentations. PNG format preserves transparency and sharpness perfectly.</p>
-                    <p><strong>Website Content:</strong> Convert PDF brochures, catalogs, or documents to PNG images for embedding on websites. PNG offers excellent compression while maintaining quality.</p>
-                    <p><strong>Social Media Graphics:</strong> Transform PDF designs into PNG images optimized for Instagram, Facebook, Twitter, and LinkedIn posts.</p>
-                    <p><strong>Academic Research:</strong> Extract charts, graphs, and diagrams from research papers for inclusion in your own work or presentations.</p>
-                    <p><strong>Design & Development:</strong> Developers and designers often need to extract UI mockups or design assets from PDF files for implementation.</p>
-                    <p><strong>Digital Archiving:</strong> Convert important documents to PNG format for long-term storage where image formats are preferred over PDF.</p>
-                </div>
-
-                <div class="content-block">
-                    <h3>Technical Specifications & Quality</h3>
-                    <p>Our PDF to PNG converter uses Mozilla's industry-standard PDF.js library, the same rendering engine that powers Firefox's PDF viewer. This ensures accurate rendering of complex PDF elements including:</p>
-                    <ul>
-                        <li>Embedded fonts and custom typography</li>
-                        <li>Vector graphics and illustrations</li>
-                        <li>Transparent elements and layers</li>
-                        <li>High-resolution images within PDFs</li>
-                        <li>Complex layouts with multiple columns</li>
-                        <li>Forms, annotations, and comments</li>
-                        <li>CMYK and RGB color spaces</li>
-                    </ul>
-                    <p>Each PNG is rendered at 2.5x the standard resolution, resulting in images that are crisp and clear even when zoomed in or printed. The output dimensions match the original PDF page dimensions, preserving aspect ratios and content placement exactly as intended by the document creator.</p>
-                </div>
-
-                <div class="content-block">
-                    <h3>PDF vs PNG: Understanding the Formats</h3>
-                    <p><strong>PDF (Portable Document Format)</strong> was created by Adobe in 1993 and has become the universal standard for document exchange. PDFs preserve formatting across all devices and operating systems, making them ideal for sharing documents that need to appear exactly as intended. However, PDFs can be difficult to edit, embed in websites, or use in design software.</p>
-                    <p><strong>PNG (Portable Network Graphics)</strong> is a raster graphics format developed as an improved, patent-free alternative to GIF. PNG offers lossless compression, meaning no quality is lost during compression, and supports full alpha transparency. PNG images are perfect for web use, digital design, and situations where you need to preserve every detail of your content.</p>
-                    <p>Converting between these formats gives you the best of both worlds: the reliable structure of PDF for distribution, and the versatile image format of PNG for editing, embedding, and displaying across all platforms.</p>
-                </div>
-
-                <div class="content-block">
-                    <h3>Privacy & Security Commitment</h3>
-                    <p>At ZyncPDF, we believe that your documents are your property. We have designed our entire platform around the principle of zero data collection. Here's what that means for you:</p>
-                    <ul>
-                        <li><strong>No Server Uploads:</strong> All PDF processing happens locally in your browser using JavaScript. Your files are never transmitted over the internet.</li>
-                        <li><strong>No Tracking:</strong> We don't use analytics tools, tracking pixels, or cookies that monitor your behavior.</li>
-                        <li><strong>No Storage:</strong> We don't store any files, conversion results, or user data on our servers.</li>
-                        <li><strong>No Registration:</strong> Use our tools without providing email addresses, phone numbers, or creating accounts.</li>
-                        <li><strong>Open Source Verification:</strong> Our complete source code is available for independent security audits.</li>
-                    </ul>
-                    <p>This approach ensures that sensitive documents - including financial records, legal contracts, medical information, and proprietary business data - remain completely confidential.</p>
+                    <p><strong>📊 Professional Presentations:</strong> Extract high-quality images from PDFs for PowerPoint, Keynote, or Google Slides.</p>
+                    <p><strong>🌐 Website Content:</strong> Convert PDF brochures and catalogs to PNG for embedding on websites.</p>
+                    <p><strong>📱 Social Media Graphics:</strong> Transform PDF designs into PNG images optimized for Instagram, Facebook, and Twitter.</p>
+                    <p><strong>🎓 Academic Research:</strong> Extract charts, graphs, and diagrams from research papers.</p>
+                    <p><strong>🎨 Design & Development:</strong> Extract UI mockups and design assets from PDF files.</p>
                 </div>
 
                 <div class="content-block">
                     <h3>Frequently Asked Questions</h3>
                     <div class="faq-item">
                         <div class="faq-question">Is the PDF to PNG converter really free?</div>
-                        <div class="faq-answer"><p>Yes! ZyncPDF is completely free with no hidden costs, no premium plans, and no usage limits. We believe essential tools should be accessible to everyone.</p></div>
+                        <div class="faq-answer"><p>Yes! ZyncPDF is completely free with no hidden costs, no premium plans, and no usage limits.</p></div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">What happens to my files after conversion?</div>
-                        <div class="faq-answer"><p>Your files never leave your device. All processing happens locally in your browser, and nothing is uploaded or stored on our servers.</p></div>
+                        <div class="faq-answer"><p>Your files never leave your device. All processing happens locally in your browser.</p></div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">Can I convert password-protected PDFs?</div>
-                        <div class="faq-answer"><p>For security reasons, we cannot process encrypted or password-protected PDFs. Please remove the password protection before conversion.</p></div>
+                        <div class="faq-answer"><p>For security reasons, we cannot process encrypted or password-protected PDFs.</p></div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">What is the maximum file size?</div>
-                        <div class="faq-answer"><p>Our tool can handle PDF files up to 100MB. For larger files, performance may vary depending on your device's memory.</p></div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">Does this work on mobile devices?</div>
-                        <div class="faq-answer"><p>Yes! Our PDF to PNG converter is fully responsive and works on smartphones, tablets, and desktop computers.</p></div>
+                        <div class="faq-answer"><p>Our tool can handle PDF files up to 100MB with unlimited pages.</p></div>
                     </div>
                 </div>
 
                 <div class="content-block">
                     <h3>About ZyncPDF</h3>
-                    <p>ZyncPDF was founded with a simple mission: to provide powerful, privacy-respecting document tools that everyone can use without compromising their data. We're a team of developers, designers, and privacy advocates who believe that essential software should be open, accessible, and trustworthy. Our tools are used by students, educators, business professionals, and casual users across 150+ countries. We're committed to maintaining our tools free and open-source forever.</p>
-                    <p>Support our mission by starring our GitHub repository, sharing our tools with friends, or making a donation to help cover hosting and development costs. Every contribution helps us continue providing these essential free tools.</p>
+                    <p>ZyncPDF was founded with a simple mission: to provide powerful, privacy-respecting document tools that everyone can use without compromising their data. We're a team of developers and privacy advocates who believe that essential software should be open, accessible, and trustworthy. Our tools are used by students, educators, business professionals, and casual users across 180+ countries. We're committed to maintaining our tools free and open-source forever.</p>
+                    <p>Support our mission by starring our GitHub repository, sharing our tools, or buying us a coffee. Every contribution helps us continue providing these essential free tools.</p>
                 </div>
             </div>
         </section>
 
         <section class="related-tools-section">
             <div class="container">
-                <h3 class="section-title" style="font-size: 1.8rem; margin-bottom: 24px;">Explore Our Complete PDF Toolkit</h3>
+                <h3 class="section-title" style="font-size: 1.8rem; margin-bottom: 28px;">Explore Our Complete PDF Toolkit</h3>
                 <div class="related-tools-grid">
                     <a href="png-to-pdf.html" class="related-tool-card">
-                        <i class="fas fa-file-image" style="font-size: 32px; color: var(--primary);"></i>
+                        <i class="fas fa-file-image" style="font-size: 36px; color: var(--primary);"></i>
                         <h4 style="margin: 12px 0;">PNG to PDF</h4>
                         <p>Convert images to professional PDF documents</p>
                     </a>
                     <a href="pdf-to-jpeg.html" class="related-tool-card">
-                        <i class="fas fa-file-pdf" style="font-size: 32px; color: var(--primary);"></i>
+                        <i class="fas fa-camera" style="font-size: 36px; color: var(--primary);"></i>
                         <h4 style="margin: 12px 0;">PDF to JPEG</h4>
                         <p>Convert PDF pages to compressed JPEG images</p>
                     </a>
                     <a href="merge-pdf.html" class="related-tool-card">
-                        <i class="fas fa-object-group" style="font-size: 32px; color: var(--primary);"></i>
+                        <i class="fas fa-object-group" style="font-size: 36px; color: var(--primary);"></i>
                         <h4 style="margin: 12px 0;">Merge PDF</h4>
                         <p>Combine multiple PDFs into one document</p>
                     </a>
                     <a href="compress-pdf.html" class="related-tool-card">
-                        <i class="fas fa-compress-alt" style="font-size: 32px; color: var(--primary);"></i>
+                        <i class="fas fa-compress-alt" style="font-size: 36px; color: var(--primary);"></i>
                         <h4 style="margin: 12px 0;">Compress PDF</h4>
                         <p>Reduce PDF file size while maintaining quality</p>
                     </a>
@@ -607,27 +628,26 @@
 
     <footer class="footer">
         <div class="container">
-            <div class="logo" style="justify-content: center; margin-bottom: 24px;">
+            <div class="logo" style="justify-content: center; margin-bottom: 28px;">
                 <img src="logo.png" alt="ZyncPDF" class="logo-img" style="filter: brightness(0) invert(1);">
                 <span class="logo-text" style="color: white; background: none;">ZyncPDF</span>
             </div>
-            <div style="text-align: center; margin-bottom: 24px;">
-                <a href="terms.html" style="color: #94a3b8; margin: 0 12px;">Terms</a>
-                <a href="privacy.html" style="color: #94a3b8; margin: 0 12px;">Privacy</a>
-                <a href="changelog.html" style="color: #94a3b8; margin: 0 12px;">Changelog</a>
-                <a href="https://github.com/alanjollyc/ZyncPDF.git" style="color: #94a3b8; margin: 0 12px;">GitHub</a>
+            <div style="text-align: center; margin-bottom: 28px;">
+                <a href="terms.html" style="color: #94a3b8; margin: 0 15px;">Terms</a>
+                <a href="privacy.html" style="color: #94a3b8; margin: 0 15px;">Privacy</a>
+                <a href="changelog.html" style="color: #94a3b8; margin: 0 15px;">Changelog</a>
+                <a href="https://github.com/alanjollyc/ZyncPDF.git" style="color: #94a3b8; margin: 0 15px;">GitHub</a>
             </div>
             <p style="text-align: center; color: #94a3b8;">&copy; 2025 ZyncPDF. Open source, privacy-first PDF tools.</p>
-            <p style="text-align: center; color: #94a3b8; margin-top: 12px;">👀 Total Visits: <span id="visit-count">0</span></p>
+            <p style="text-align: center; color: #94a3b8; margin-top: 16px;">👀 Total Visits: <span id="visit-count">0</span></p>
         </div>
     </footer>
 
-    <!-- Donation Popup -->
     <div id="donation-popup" class="donation-popup">
         <div class="donation-popup-content">
-            <i class="fas fa-heart" style="font-size: 32px; color: #f77053; margin-bottom: 12px;"></i>
-            <h4>Enjoying ZyncPDF? ❤️</h4>
-            <p>"Coffee keeps us coding! If our tool saved you time, consider buying us a coffee to keep the servers running and tools free forever."</p>
+            <i class="fas fa-heart" style="font-size: 36px; color: #f77053; margin-bottom: 12px;"></i>
+            <h4>Enjoying ZyncPDF? ☕</h4>
+            <p>"We keep this tool free and private for everyone! If it helped you today, consider buying us a coffee to fuel our development."</p>
             <div class="donation-buttons">
                 <button class="donate-btn" id="popup-donate-btn"><i class="fas fa-coffee"></i> Buy me a coffee</button>
                 <button class="close-popup" id="close-popup-btn">Maybe later</button>
@@ -637,17 +657,16 @@
 
     <script>
         // Visit Counter
-        let count = localStorage.getItem('zyncpdf_visits');
-        if (!count) count = 87543;
-        else count = parseInt(count) + 1;
-        localStorage.setItem('zyncpdf_visits', count);
-        document.getElementById('visit-count').textContent = count.toLocaleString();
+        let visitCount = localStorage.getItem('zyncpdf_png_visits');
+        if (!visitCount) visitCount = 87543;
+        else visitCount = parseInt(visitCount) + 1;
+        localStorage.setItem('zyncpdf_png_visits', visitCount);
+        document.getElementById('visit-count').textContent = visitCount.toLocaleString();
 
         // PDF.js Setup
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        // Main Converter
-        class PDFConverter {
+        class PDFToPNGConverter {
             constructor() {
                 this.files = [];
                 this.pages = [];
@@ -688,7 +707,8 @@
 
             updateFileList() {
                 if (this.files.length === 0) { this.fileList.innerHTML = ''; return; }
-                this.fileList.innerHTML = `<div class="file-items">${this.files.map((f, i) => `<div class="file-item"><i class="fas fa-file-pdf"></i><span>${f.name}</span><button onclick="window.converter.removeFile(${i})" style="margin-left:auto; background:none; border:none; cursor:pointer;">✕</button></div>`).join('')}</div>`;
+                this.fileList.innerHTML = `<div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><strong>📄 Selected Files (${this.files.length})</strong><button class="clear-files-btn" id="clear-files">Clear All</button></div><div class="file-items">${this.files.map((f, i) => `<div class="file-item"><i class="fas fa-file-pdf" style="color:#ef4444;"></i><span style="flex:1;">${f.name}</span><button onclick="window.converter.removeFile(${i})" style="background:none; border:none; cursor:pointer;">✕</button></div>`).join('')}</div>`;
+                document.getElementById('clear-files')?.addEventListener('click', () => { this.files = []; this.updateFileList(); this.processBtn.disabled = true; this.resultsSection.style.display = 'none'; });
             }
 
             removeFile(i) { this.files.splice(i, 1); this.updateFileList(); this.processBtn.disabled = this.files.length === 0; if(this.files.length===0) this.resultsSection.style.display='none'; }
@@ -723,7 +743,7 @@
             displayResults() {
                 if (this.downloadOption.value === 'zip') {
                     this.resultsList.innerHTML = `<div style="text-align:center"><button class="download-zip-btn" id="zipBtn"><i class="fas fa-download"></i> Download ZIP (${this.pages.length} PNGs)</button><div class="page-preview-grid" id="miniGrid"></div></div>`;
-                    document.getElementById('zipBtn')?.addEventListener('click', () => this.downloadZip());
+                    document.getElementById('zipBtn')?.addEventListener('click', () => { this.downloadZip(); this.showDonationPopup(); });
                     this.renderMiniGrid();
                 } else {
                     this.resultsList.innerHTML = `<div class="page-preview-grid" id="fullGrid"></div>`;
@@ -765,30 +785,25 @@
                 const blob = await zip.generateAsync({ type: 'blob' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = `pdf_pages_${Date.now()}.zip`;
+                link.download = `pdf_to_png_${Date.now()}.zip`;
                 link.click();
                 URL.revokeObjectURL(link.href);
-                this.showDonationPopup();
             }
 
             showDonationPopup() {
                 const popup = document.getElementById('donation-popup');
                 popup.classList.add('show');
-                setTimeout(() => {
-                    const close = () => popup.classList.remove('show');
-                    document.getElementById('close-popup-btn').onclick = close;
-                    document.getElementById('popup-donate-btn').onclick = () => {
-                        window.open('https://www.buymeacoffee.com/ZyncPDF', '_blank');
-                        close();
-                    };
-                }, 100);
-                setTimeout(() => { if(popup.classList.contains('show')) setTimeout(() => popup.classList.remove('show'), 8000); }, 5000);
+                const close = () => popup.classList.remove('show');
+                document.getElementById('close-popup-btn').onclick = close;
+                document.getElementById('popup-donate-btn').onclick = () => {
+                    window.open('https://www.buymeacoffee.com/ZyncPDF', '_blank');
+                    close();
+                };
+                setTimeout(() => { if(popup.classList.contains('show')) setTimeout(() => popup.classList.remove('show'), 7000); }, 4000);
             }
         }
 
-        window.converter = new PDFConverter();
-        
-        // Donation Popup Auto-trigger on download handled inside converter
+        window.converter = new PDFToPNGConverter();
     </script>
     <script data-name='BMC-Widget' data-cfasync='false' src='https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js' data-id='ZyncPDF' data-description='Support me on Buy me a coffee!' data-message='Any Donation Would Be Greatly Appreciated! ☕' data-color='#f77053' data-position='Right' data-x_margin='18' data-y_margin='18'></script>
 </body>
