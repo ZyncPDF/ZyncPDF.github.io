@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="ZyncPDF - The open-source, privacy-first PDF toolkit. Convert, merge, compress, and edit PDFs directly in your browser. 100% free, no registration, no uploads.">
-    <meta name="keywords" content="Merge PDF, split PDF, combine PDF, extract PDF, compress PDF, convert PDF, Word to PDF, Excel to PDF, Powerpoint to PDF, PDF to JPG, JPG to PDF, PDF to PNG, PNG to PDF, PDF tools, free PDF converter, privacy PDF tool, open source PDF">
+    <meta name="keywords" content=""Merge PDF, split PDF, combine PDF, extract PDF, compress PDF, convert PDF, Word to PDF, Excel to PDF, Powerpoint to PDF, PDF to JPG, JPG to PDF">
     <meta name="author" content="ZyncPDF Team">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,7 @@
             overflow-x: hidden;
         }
 
+        /* Animated Gradient Background */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -51,6 +52,7 @@
             padding: 0 32px;
         }
 
+        /* Header */
         .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -132,6 +134,7 @@
             color: #4f46e5;
         }
 
+        /* Hero Section */
         .hero {
             padding: 80px 0 60px;
             text-align: center;
@@ -194,6 +197,11 @@
             animation: fadeInUp 0.8s ease 0.3s backwards;
         }
 
+        .privacy-badge i {
+            font-size: 1.1rem;
+        }
+
+        /* Stats Section */
         .stats-section {
             padding: 40px 0;
             display: flex;
@@ -232,6 +240,7 @@
             margin-top: 8px;
         }
 
+        /* Tools Section */
         .tools-section {
             padding: 60px 0;
         }
@@ -298,6 +307,8 @@
             border: 1px solid rgba(0,0,0,0.05);
             position: relative;
             overflow: hidden;
+            animation: fadeInUp 0.5s ease backwards;
+            animation-delay: calc(var(--delay, 0) * 0.05s);
         }
 
         .tool-card::before {
@@ -358,6 +369,7 @@
             gap: 12px;
         }
 
+        /* Features Section */
         .features-section {
             padding: 60px 0;
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
@@ -398,6 +410,7 @@
             margin-bottom: 12px;
         }
 
+        /* Comparison Table */
         .comparison-section {
             padding: 60px 0;
         }
@@ -439,6 +452,7 @@
             font-size: 1.2rem;
         }
 
+        /* FAQ Section */
         .faq-section {
             padding: 60px 0;
         }
@@ -487,6 +501,7 @@
             max-height: 300px;
         }
 
+        /* Footer */
         .footer {
             background: #0f172a;
             color: white;
@@ -637,42 +652,45 @@
                     <input type="text" id="tool-search-bar" placeholder="Search for any tool... (e.g., PDF to PNG)">
                 </div>
 
-                <!-- STATIC HTML TOOLS GRID - THIS IS THE KEY FIX FOR SEO -->
                 <div class="tools-grid" id="tools-grid">
-                    <!-- All tools are hardcoded for SEO - search engines can see these links -->
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>PDF to PNG</h3><p>Convert PDF files to high-quality PNG images</p><a href="pdf-to-png.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>PDF to JPEG</h3><p>Quickly transform PDF pages into JPEG format</p><a href="pdf-to-jpeg.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-font"></i><h3>PDF to TXT</h3><p>Extract text from PDF files instantly</p><a href="pdf-to-txt.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>PNG to PDF</h3><p>Convert PNG images into PDF documents</p><a href="png-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>JPEG to PDF</h3><p>Turn your JPEG images into PDF files</p><a href="jpeg-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>TXT to PDF</h3><p>Transform TXT documents into PDFs</p><a href="txt-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>HTML to PDF</h3><p>Convert HTML pages into professional PDFs</p><a href="html-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>Markdown to PDF</h3><p>Convert Markdown files into PDFs</p><a href="markdown-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>Word to PDF</h3><p>Turn Word documents into PDF format</p><a href="word-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>PPT to PDF</h3><p>Convert PowerPoint presentations to PDF</p><a href="ppt-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-pdf"></i><h3>Excel to PDF</h3><p>Transform Excel sheets into PDFs</p><a href="excel-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-object-group"></i><h3>Merge PDF</h3><p>Combine multiple PDFs into a single file</p><a href="merge-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-cut"></i><h3>Split PDF</h3><p>Separate PDF pages into individual files</p><a href="split-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-compress"></i><h3>Compress PDF</h3><p>Reduce PDF file size without losing quality</p><a href="compress-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-rotate-right"></i><h3>Rotate PDF</h3><p>Rotate PDF pages clockwise or counter-clockwise</p><a href="rotate-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-lock"></i><h3>Add Password</h3><p>Protect PDFs with a password</p><a href="add-password.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-unlock"></i><h3>Remove Password</h3><p>Unlock PDF files by removing passwords</p><a href="remove-password.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-eraser"></i><h3>Remove Metadata</h3><p>Strip hidden data from PDF files</p><a href="remove-metadata.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-hand-paper"></i><h3>Extract Pages</h3><p>Select specific pages to extract from PDF</p><a href="extract-pages.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-trash-alt"></i><h3>Remove Pages</h3><p>Delete specific pages from PDF files</p><a href="remove-pages.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-sort"></i><h3>Sort Pages</h3><p>Swap & sort PDF pages in anyway you want</p><a href="sort-pages.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-flask"></i><h3>Flatten PDF</h3><p>Permanently embed form fields and annotations</p><a href="flatten-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-chart-line"></i><h3>Compare PDFs</h3><p>Compare two PDF files side by side</p><a href="compare-pdfs.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-edit"></i><h3>Edit Metadata</h3><p>Edit PDF metadata like author, title, etc.</p><a href="edit-metadata.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-image"></i><h3>HEIF to PDF</h3><p>Convert HEIF/HEIC images to PDF documents</p><a href="heif-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-image"></i><h3>WEBP to PDF</h3><p>Convert WEBP images into PDF format</p><a href="webp-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-file-image"></i><h3>SVG to PDF</h3><p>Convert SVG files into PDF documents</p><a href="svg-to-pdf.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>WEBP to JPEG</h3><p>Convert WEBP images to JPEG format</p><a href="webp-to-jpeg.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>WEBP to PNG</h3><p>Convert WEBP images to PNG format</p><a href="webp-to-png.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>SVG to JPEG</h3><p>Convert SVG images to JPEG format</p><a href="svg-to-jpeg.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-image"></i><h3>SVG to PNG</h3><p>Convert SVG images to PNG format</p><a href="svg-to-png.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                    <div class="tool-card"><i class="fas fa-compress-alt"></i><h3>Compress Image</h3><p>Reduce image size embedded in PDF</p><a href="compress-image.html" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a></div>
-                </div>
+    <!-- Tools will be populated via JS -->
+</div>
+
+<!-- SEO HIDDEN LINKS - Google can see these, users don't see them -->
+<div style="display: none; position: absolute; visibility: hidden;" aria-hidden="true">
+    <a href="pdf-to-png.html">PDF to PNG</a>
+    <a href="pdf-to-jpeg.html">PDF to JPEG</a>
+    <a href="pdf-to-txt.html">PDF to TXT</a>
+    <a href="png-to-pdf.html">PNG to PDF</a>
+    <a href="jpeg-to-pdf.html">JPEG to PDF</a>
+    <a href="txt-to-pdf.html">TXT to PDF</a>
+    <a href="html-to-pdf.html">HTML to PDF</a>
+    <a href="markdown-to-pdf.html">Markdown to PDF</a>
+    <a href="word-to-pdf.html">Word to PDF</a>
+    <a href="ppt-to-pdf.html">PPT to PDF</a>
+    <a href="excel-to-pdf.html">Excel to PDF</a>
+    <a href="merge-pdf.html">Merge PDF</a>
+    <a href="split-pdf.html">Split PDF</a>
+    <a href="compress-pdf.html">Compress PDF</a>
+    <a href="rotate-pdf.html">Rotate PDF</a>
+    <a href="add-password.html">Add Password</a>
+    <a href="remove-password.html">Remove Password</a>
+    <a href="remove-metadata.html">Remove Metadata</a>
+    <a href="extract-pages.html">Extract Pages</a>
+    <a href="remove-pages.html">Remove Pages</a>
+    <a href="sort-pages.html">Sort Pages</a>
+    <a href="flatten-pdf.html">Flatten PDF</a>
+    <a href="compare-pdfs.html">Compare PDFs</a>
+    <a href="edit-metadata.html">Edit Metadata</a>
+    <a href="heif-to-pdf.html">HEIF to PDF</a>
+    <a href="webp-to-pdf.html">WEBP to PDF</a>
+    <a href="svg-to-pdf.html">SVG to PDF</a>
+    <a href="webp-to-jpeg.html">WEBP to JPEG</a>
+    <a href="webp-to-png.html">WEBP to PNG</a>
+    <a href="svg-to-jpeg.html">SVG to JPEG</a>
+    <a href="svg-to-png.html">SVG to PNG</a>
+    <a href="compress-image.html">Compress Image</a>
+</div>
             </div>
         </section>
 
@@ -711,7 +729,11 @@
                 <div class="comparison-table-container">
                     <table class="comparison-table">
                         <thead>
-                            <tr><th>Features</th><th>ZyncPDF</th><th>Other Tools</th></tr>
+                            <tr>
+                                <th>Features</th>
+                                <th>ZyncPDF</th>
+                                <th>Other Tools</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr><td>Privacy-Focused (No Uploads)</td><td class="check"><i class="fas fa-check"></i></td><td class="x-mark"><i class="fas fa-times"></i></td></tr>
@@ -730,10 +752,42 @@
             <div class="container">
                 <h2 class="section-title">Frequently Asked Questions</h2>
                 <div class="faq-container">
-                    <div class="faq-item"><div class="faq-question"><span>Is ZyncPDF really free forever?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>Yes! ZyncPDF is completely free with no premium tiers, no usage limits, and no hidden costs.</p></div></div>
-                    <div class="faq-item"><div class="faq-question"><span>How does ZyncPDF protect my privacy?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>All processing happens directly in your browser. Your files are never uploaded to any server.</p></div></div>
-                    <div class="faq-item"><div class="faq-question"><span>Do I need to create an account?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>No registration, no email, no personal information required. Just open the tool and start converting instantly.</p></div></div>
-                    <div class="faq-item"><div class="faq-question"><span>What file formats are supported?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><p>We support PDF, PNG, JPEG, JPG, TXT, HTML, Markdown, Word, Excel, PowerPoint, HEIF, WEBP, SVG, and many more formats.</p></div></div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is ZyncPDF really free forever?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! ZyncPDF is completely free with no premium tiers, no usage limits, and no hidden costs. We're committed to keeping essential tools accessible to everyone.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How does ZyncPDF protect my privacy?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>All processing happens directly in your browser. Your files are never uploaded to any server — they stay on your device from start to finish.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Do I need to create an account?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No registration, no email, no personal information required. Just open the tool and start converting instantly.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What file formats are supported?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We support PDF, PNG, JPEG, JPG, TXT, HTML, Markdown, Word, Excel, PowerPoint, HEIF, WEBP, SVG, and many more formats.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -764,12 +818,46 @@
     </footer>
 
     <script>
-        // Visit Counter
-        let visitCount = localStorage.getItem('ZyncPDF-visit-count');
-        if (!visitCount) visitCount = 89347;
-        else visitCount = parseInt(visitCount) + 1;
-        localStorage.setItem('ZyncPDF-visit-count', visitCount);
-        document.getElementById('visit-count').textContent = visitCount.toLocaleString();
+        // Tools Data
+        const tools = [
+            { icon: "fas fa-image", name: "PDF to PNG", desc: "Convert PDF files to high-quality PNG images", link: "pdf-to-png.html" },
+            { icon: "fas fa-image", name: "PDF to JPEG", desc: "Quickly transform PDF pages into JPEG format", link: "pdf-to-jpeg.html" },
+            { icon: "fas fa-font", name: "PDF to TXT", desc: "Extract text from PDF files instantly", link: "pdf-to-txt.html" },
+            { icon: "fas fa-file-pdf", name: "PNG to PDF", desc: "Convert PNG images into PDF documents", link: "png-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "JPEG to PDF", desc: "Turn your JPEG images into PDF files", link: "jpeg-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "TXT to PDF", desc: "Transform TXT documents into PDFs", link: "txt-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "HTML to PDF", desc: "Convert HTML pages into professional PDFs", link: "html-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "Markdown to PDF", desc: "Convert Markdown files into PDFs", link: "markdown-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "Word to PDF", desc: "Turn Word documents into PDF format", link: "word-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "PPT to PDF", desc: "Convert PowerPoint presentations to PDF", link: "ppt-to-pdf.html" },
+            { icon: "fas fa-file-pdf", name: "Excel to PDF", desc: "Transform Excel sheets into PDFs", link: "excel-to-pdf.html" },
+            { icon: "fas fa-object-group", name: "Merge PDF", desc: "Combine multiple PDFs into a single file", link: "merge-pdf.html" },
+            { icon: "fas fa-cut", name: "Split PDF", desc: "Separate PDF pages into individual files", link: "split-pdf.html" },
+            { icon: "fas fa-compress", name: "Compress PDF", desc: "Reduce PDF file size without losing quality", link: "compress-pdf.html" },
+            { icon: "fas fa-rotate-right", name: "Rotate PDF", desc: "Rotate PDF pages clockwise or counter-clockwise", link: "rotate-pdf.html" },
+            { icon: "fas fa-lock", name: "Add Password", desc: "Protect PDFs with a password", link: "add-password.html" },
+            { icon: "fas fa-unlock", name: "Remove Password", desc: "Unlock PDF files by removing passwords", link: "remove-password.html" }
+        ];
+
+        function renderTools(searchTerm = '') {
+            const grid = document.getElementById('tools-grid');
+            const filtered = tools.filter(t => t.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            grid.innerHTML = filtered.map((tool, idx) => `
+                <div class="tool-card" style="animation-delay: ${idx * 0.03}s">
+                    <i class="${tool.icon}"></i>
+                    <h3>${tool.name}</h3>
+                    <p>${tool.desc}</p>
+                    <a href="${tool.link}" class="tool-link">Try Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        const searchBar = document.getElementById('tool-search-bar');
+        if (searchBar) {
+            searchBar.addEventListener('input', (e) => renderTools(e.target.value));
+        }
+        renderTools();
 
         // FAQ Accordion
         document.querySelectorAll('.faq-item').forEach(item => {
@@ -777,6 +865,13 @@
                 item.classList.toggle('active');
             });
         });
+
+        // Visit Counter with animation
+        let visitCount = localStorage.getItem('ZyncPDF-visit-count');
+        if (!visitCount) visitCount = 89347;
+        else visitCount = parseInt(visitCount) + 1;
+        localStorage.setItem('ZyncPDF-visit-count', visitCount);
+        document.getElementById('visit-count').textContent = visitCount.toLocaleString();
 
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -788,24 +883,7 @@
                 }
             });
         });
-
-        // Search functionality (still works)
-        const searchBar = document.getElementById('tool-search-bar');
-        if (searchBar) {
-            const allCards = document.querySelectorAll('.tool-card');
-            searchBar.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                allCards.forEach(card => {
-                    const title = card.querySelector('h3').innerText.toLowerCase();
-                    if (title.includes(term)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        }
     </script>
-    <script data-name='BMC-Widget' data-cfasync='false' src='https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js' data-id='ZyncPDF' data-description='Support me on Buy me a coffee!' data-message='Any Donation Would Be Greatly Appreciated! ☕' data-color='#f77053' data-position='Right' data_x_margin='18' data_y_margin='18'></script>
+    <script data-name='BMC-Widget' data-cfasync='false' src='https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js' data-id='ZyncPDF' data-description='Support me on Buy me a coffee!' data-message='Any Donation Would Be Greatly Appreciated! ☕' data-color='#f77053' data-position='Right' data-x_margin='18' data-y_margin='18'></script>
 </body>
 </html>
