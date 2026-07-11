@@ -65,14 +65,13 @@ export function createModal(options = {}) {
   const modal = document.createElement('div');
   modal.className = `modal ${SIZE_CLASSES[size] || SIZE_CLASSES.md}`;
   
-  let actionButtons = '';
+let actionButtons = '';
   if (actions.length > 0) {
     actionButtons = `
       <div class="modal-footer">
-        ${actions.map((action, i) => `
-          <button 
-            `<button class="btn btn-${action.variant || 'secondary'}" data-action="${i}" type="button">${action.label}</button>`
-          ).join('')}
+        ${actions.map((action, i) => {
+          return '<button class="btn btn-' + (action.variant || 'secondary') + '" data-action="' + i + '" type="button">' + action.label + '</button>';
+        }).join('')}
       </div>
     `;
   }

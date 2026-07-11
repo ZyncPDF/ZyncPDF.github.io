@@ -18,7 +18,7 @@ interface WorkerResponse {
   error?: string;
 }
 
-class PDFWorker {
+export class PDFWorker {
   private worker: Worker | null = null;
   private pendingRequests: Map<string, { resolve: Function; reject: Function }> = new Map();
   private requestId = 0;

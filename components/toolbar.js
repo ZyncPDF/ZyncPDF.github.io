@@ -41,7 +41,7 @@ export function createToolbar(config = {}) {
   const {
     items = [],
     orientation = 'horizontal',
-    overflowMenu = true,
+    showOverflowMenu = true,
     className = '',
     ariaLabel = 'Toolbar'
   } = config;

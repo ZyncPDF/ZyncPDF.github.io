@@ -661,7 +661,6 @@ export class AnnotationManager extends EventEmitter {
   // DRAG HANDLING
   // ============================================
 
-  private dragState: { isDragging: boolean; startPoint: Point; annotationId: string; handleId?: string } | null = null;
 
   private startDrag(point: Point, annotationId: string, handleId?: string): void {
     this.dragState = {
@@ -1090,7 +1089,7 @@ export class AnnotationManager extends EventEmitter {
     const ids = [...this.selection.annotationIds];
     this.clearSelection();
     
-    ids.forEach((id, i) => {
+ids.forEach((id, i) => {
       const ann = this.annotations.get(id);
       if (ann) {
         const newRect = {
@@ -1103,7 +1102,7 @@ export class AnnotationManager extends EventEmitter {
           ...ann.data,
           rect: newRect,
         });
-      });
+      }
     });
   }
 
@@ -1127,18 +1126,6 @@ export class AnnotationManager extends EventEmitter {
     this.emit('annotation:contextmenu', { annotation, x, y });
   }
 
-  private renderAnnotations(): void {
-    if (!this.overlayContext || !this.overlayCanvas) return;
-    
-    const ctx = this.overlayContext;
-    ctx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
-
-    const annotations = this.getAnnotationsByPage(this.documentManager.currentPage);
-    annotations.forEach(ann => this.drawAnnotation(ctx, ann));
-    
-    this.drawSelectionHandles(ctx);
-  }
-
   loadAnnotations(doc: any): void {
     this.annotations.clear();
     this.annotationsByPage.clear();
@@ -1155,17 +1142,6 @@ export class AnnotationManager extends EventEmitter {
     this.renderAnnotations();
   }
 
-  private clearSelection(): void {
-    this.selection.annotationIds.forEach(id => {
-      const ann = this.annotations.get(id);
-      if (ann) ann.selected = false;
-    });
-    this.selection.annotationIds = [];
-    this.selection.bounds = null;
-    this.selection.handles = [];
-    this.emit('selection:change', this.selection);
-  }
-
   setAnnotationTool(options: Partial<ToolOptions>): void {
     this.toolOptions = { ...this.toolOptions, ...options };
   }
@@ -1174,13 +1150,12 @@ export class AnnotationManager extends EventEmitter {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  initialize(): Promise<void> {
-    return Promise.resolve();
-  }
-
   destroy(): void {
     this.overlayCanvas?.remove();
     this.annotations.clear();
     this.annotationsByPage.clear();
   }
 }
+
+
+

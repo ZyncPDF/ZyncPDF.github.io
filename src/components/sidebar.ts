@@ -575,13 +575,6 @@ export class Sidebar extends EventEmitter {
     return this.state.activeTab;
   }
 
-  setDocument(doc: PDFDocument | null): void {
-    this.document = doc;
-    this.thumbnails.clear();
-    this.render();
-    this.emit('document:change', doc);
-  }
-
   getCurrentPageIndex(): number {
     // This would come from the document manager
     return 0;

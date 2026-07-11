@@ -346,6 +346,38 @@ export interface AppSettings {
   backgroundPattern: 'none' | 'dots' | 'grid' | 'lines';
 }
 
+export const DEFAULT_SETTINGS: AppSettings = {
+  theme: 'system',
+  language: 'en',
+  autoSave: true,
+  autoSaveInterval: 30000,
+  showRulers: false,
+  showGrid: false,
+  gridSize: 20,
+  snapToGrid: true,
+  defaultZoom: 1.0,
+  zoomStep: 0.1,
+  minZoom: 0.1,
+  maxZoom: 8.0,
+  smoothScrolling: true,
+  hardwareAcceleration: true,
+  renderQuality: 'high',
+  textSelectionColor: 'rgba(99, 102, 241, 0.3)',
+  annotationColors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'],
+  recentFilesLimit: 20,
+  keyboardShortcuts: {},
+  toolbarPosition: 'top',
+  sidebarPosition: 'left',
+  panelPosition: 'right',
+  autoHideSidebar: false,
+  autoHidePanel: false,
+  showPageBorders: true,
+  showPageShadows: true,
+  pageGap: 20,
+  backgroundColor: '#525659',
+  backgroundPattern: 'dots',
+};
+
 // ============================================
 // KEYBOARD SHORTCUTS
 // ============================================

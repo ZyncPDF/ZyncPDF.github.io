@@ -560,6 +560,7 @@ export class FileStore {
   async saveFile(file, metadata = {}) {
     await this.init();
     const id = metadata.id || generateId();
+    const blob = await this.fileToBlob(file);
     
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(['files'], 'readwrite');
@@ -567,7 +568,7 @@ export class FileStore {
       
       const request = store.put({
         id,
-        file: await this.fileToBlob(file),
+        file: blob,
         name: file.name,
         size: file.size,
         type: file.type,

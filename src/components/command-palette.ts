@@ -4,7 +4,7 @@
  */
 
 import { Command, KeyboardShortcut } from '../types/index.js';
-import { EventEmitter } from './event-emitter.js';
+import { EventEmitter } from '../utils/event-emitter.js';
 
 export class CommandPalette extends EventEmitter {
   private commands: Map<string, Command> = new Map();
@@ -355,7 +355,7 @@ export class CommandPalette extends EventEmitter {
     this.selectedIndex = 0;
     
     this.container?.classList.add('open');
-    this.input?.value = '';
+    if (this.input) this.input.value = '';
     this.updateResults();
     
     // Focus input after animation
@@ -384,26 +384,9 @@ export class CommandPalette extends EventEmitter {
   toggle(): void {
     if (this.isOpen) this.close();
     else this.open();
-  }
-
-  isOpened(): boolean {
-    return this.isOpen;
-  }
-
-  private escapeHtml(str: string): string {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+}
 
   private formatShortcut(shortcut: KeyboardShortcut): string {
     return ShortcutManager.format(shortcut);
-  }
-
-  /**
-   * Get commands sorted by usage (placeholder)
-   */
-  private getRecentCommands(): Command[] {
-    return this.getAll().slice(0, 8);
   }
 }

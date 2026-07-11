@@ -254,9 +254,4 @@ export class ModalManager extends EventEmitter {
   private generateId(): string {
     return `modal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
-
-  mount(container: HTMLElement): void {
-    this.container = container;
-    container.className = 'modal-container';
-  }
 }

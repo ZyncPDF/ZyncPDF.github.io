@@ -110,11 +110,13 @@ export function createDropdown(config = {}) {
     }
     if (left < 8) left = 8;
     
-    if (top + menuRect.height > viewportHeight + window.scrollY - 8) {
+if (top + menuRect.height > viewportHeight + window.scrollY - 8) {
       top = rect.top + window.scrollY - menuRect.height - 4;
     }
-    if (top < window.scrollY;
-    
+    if (top < window.scrollY) {
+      top = window.scrollY + 8;
+    }
+
     menu.style.top = `${top}px`;
     menu.style.left = `${left}px`;
   }
