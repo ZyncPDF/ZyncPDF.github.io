@@ -124,7 +124,7 @@ export class StorageManager {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(STORES.SETTINGS, 'readonly');
       const store = transaction.objectStore(STORES.SETTINGS);
-      const request = store.get('app-settings');
+      const request = store.get('app:settings');
 
       request.onsuccess = () => {
         const result = request.result;
@@ -155,7 +155,7 @@ export class StorageManager {
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(STORES.SETTINGS, 'readwrite');
       const store = transaction.objectStore(STORES.SETTINGS);
-      const request = store.put({ key: 'app-settings', value: newSettings, updatedAt: Date.now() });
+      const request = store.put({ key: 'app:settings', value: newSettings, updatedAt: Date.now() });
 
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -693,6 +693,73 @@ export class StorageManager {
     }
   }
 }
+  
+  /**
+   * Get a value from the settings store by key.
+   */
+  async get<T = any>(key: string): Promise<T | null> {
+    await this.waitReady();
+
+    if (!this.db) {
+      const item = localStorage.getItem(`zyncpdf-setting-${key}`);
+      return item ? JSON.parse(item) : null;
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(STORES.SETTINGS, 'readonly');
+      const store = transaction.objectStore(STORES.SETTINGS);
+      const request = store.get(key);
+
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? (result.value as T) : null);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  /**
+   * Set a value in the settings store by key.
+   */
+  async set<T = any>(key: string, value: T): Promise<void> {
+    await this.waitReady();
+
+    if (!this.db) {
+      localStorage.setItem(`zyncpdf-setting-${key}`, JSON.stringify(value));
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(STORES.SETTINGS, 'readwrite');
+      const store = transaction.objectStore(STORES.SETTINGS);
+      const request = store.put({ key, value, updatedAt: Date.now() });
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  /**
+   * Delete a value from the settings store by key.
+   */
+  async delete(key: string): Promise<void> {
+    await this.waitReady();
+
+    if (!this.db) {
+      localStorage.removeItem(`zyncpdf-setting-${key}`);
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(STORES.SETTINGS, 'readwrite');
+      const store = transaction.objectStore(STORES.SETTINGS);
+      const request = store.delete(key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
 
 // Export singleton
 export const storage = new StorageManager();

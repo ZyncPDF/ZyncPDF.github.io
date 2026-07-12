@@ -73,11 +73,26 @@ export class ZyncPDFApp extends EventEmitter {
     this.tabBar = new TabBar(this);
     this.statusBar = new StatusBar(this);
 
-    // Load settings
-    this.settings = this.loadSettings();
-  }
+// Load settings (will be loaded asynchronously in initialize)
+     this.settings = {};
+}
 
-  public static getInstance(): ZyncPDFApp {
+   /**
+    * Load application settings from storage or defaults.
+    */
+   private async loadAppSettings(): Promise<AppSettings> {
+     try {
+       const stored = await this.storage.get('app:settings');
+       if (stored) {
+         return { ...DEFAULT_SETTINGS, ...stored };
+       }
+     } catch (e) {
+       console.warn('[ZyncPDF] Failed to load settings:', e);
+     }
+     return DEFAULT_SETTINGS;
+   }
+
+   public static getInstance(): ZyncPDFApp {
     if (!ZyncPDFApp.instance) {
       ZyncPDFApp.instance = new ZyncPDFApp();
     }
@@ -89,9 +104,12 @@ export class ZyncPDFApp extends EventEmitter {
    */
   public async initialize(mountPoint: HTMLElement): Promise<void> {
     if (this.isInitialized) return;
-    this.mountPoint = mountPoint;
+this.mountPoint = mountPoint;
 
-    try {
+     // Load settings
+     this.settings = await this.loadAppSettings();
+
+     try {
       // Apply theme
       this.theme.apply(this.settings.theme);
 
@@ -588,53 +606,7 @@ export class ZyncPDFApp extends EventEmitter {
     this.emit('settings:change', { [key]: this.settings[key] });
   }
 
-  /**
-   * Load settings from storage
-   */
-  private loadSettings(): AppSettings {
-    const defaults: AppSettings = {
-      theme: 'system',
-      language: 'en',
-      autoSave: true,
-      autoSaveInterval: 30000,
-      showRulers: false,
-      showGrid: false,
-      gridSize: 20,
-      snapToGrid: true,
-      defaultZoom: 1.0,
-      zoomStep: 0.1,
-      minZoom: 0.1,
-      maxZoom: 8.0,
-      smoothScrolling: true,
-      hardwareAcceleration: true,
-      renderQuality: 'high',
-      textSelectionColor: 'rgba(99, 102, 241, 0.3)',
-      annotationColors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'],
-      recentFilesLimit: 20,
-      keyboardShortcuts: {},
-      toolbarPosition: 'top',
-      sidebarPosition: 'left',
-      panelPosition: 'right',
-      autoHideSidebar: false,
-      autoHidePanel: false,
-      showPageBorders: true,
-      showPageShadows: true,
-      pageGap: 20,
-      backgroundColor: '#525659',
-      backgroundPattern: 'dots',
-    };
 
-    try {
-      const stored = this.storage.get('app:settings');
-      if (stored) {
-        return { ...defaults, ...stored };
-      }
-    } catch (e) {
-      console.warn('[ZyncPDF] Failed to load settings:', e);
-    }
-
-    return defaults;
-  }
 
   /**
    * Save settings to storage
@@ -647,18 +619,27 @@ export class ZyncPDFApp extends EventEmitter {
     }
   }
 
-  /**
-   * Reset settings to defaults
-   */
-  private resetSettings(): void {
-    if (confirm('Reset all settings to defaults?')) {
-      this.storage.delete('app:settings');
-      this.settings = this.loadSettings();
-      this.theme.apply(this.settings.theme);
-      this.emit('settings:reset');
-      this.toasts.success('Settings reset to defaults');
-    }
-  }
+/**
+    * Reset settings to defaults
+    */
+   private resetSettings(): void {
+     if (confirm('Reset all settings to defaults?')) {
+       this.storage.delete('app:settings')
+         .then(() => {
+           return this.loadAppSettings();
+         })
+         .then((settings) => {
+           this.settings = settings;
+           this.theme.apply(this.settings.theme);
+           this.emit('settings:reset');
+           this.toasts.success('Settings reset to defaults');
+         })
+.catch((e) => {
+           console.error('[ZyncPDF] Failed to reset settings:', e);
+           this.toasts.error('Failed to reset settings');
+         });
+}
+   }
 
   /**
    * Open settings modal
