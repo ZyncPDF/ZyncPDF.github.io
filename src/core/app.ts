@@ -95,8 +95,8 @@ export class ZyncPDFApp extends EventEmitter {
       // Apply theme
       this.theme.apply(this.settings.theme);
 
-      // Load workspace
-      await this.workspace.load();
+// Load workspace
+       await this.workspace.loadWorkspaces();
 
       // Register global shortcuts
       this.registerGlobalShortcuts();

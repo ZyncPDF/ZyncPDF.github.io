@@ -25,11 +25,11 @@ export class WorkspaceManager extends EventEmitter {
     this.storage = app.storage;
   }
 
-  async initialize(): Promise<void> {
-    await this.loadWorkspaces();
-    await this.loadSession();
-    this.isInitialized = true;
-  }
+async initialize(): Promise<void> {
+     await this.loadWorkspaces();
+     await this.restoreSession();
+     this.isInitialized = true;
+   }
 
   // ============================================
   // WORKSPACE MANAGEMENT
@@ -275,24 +275,24 @@ export class WorkspaceManager extends EventEmitter {
     await this.storage.set('zyncpdf-session', session);
   }
 
-  private async loadSession(): Promise<void> {
-    try {
-      const session = await this.storage.get('zyncpdf-session');
-      if (session && session.tabs) {
-        // Restore tabs
-        for (const [tabId, tab] of session.tabs) {
-          this.tabs.set(tabId, tab as DocumentTab);
-        }
-        
-        // Restore active workspace
-        if (session.currentWorkspaceId) {
-          await this.setActiveWorkspace(session.currentWorkspaceId);
-        }
-      }
-    } catch (e) {
-      console.warn('[WorkspaceManager] Failed to load session:', e);
-    }
-  }
+public async restoreSession(): Promise<void> {
+     try {
+       const session = await this.storage.get('zyncpdf-session');
+       if (session && session.tabs) {
+         // Restore tabs
+         for (const [tabId, tab] of session.tabs) {
+           this.tabs.set(tabId, tab as DocumentTab);
+         }
+         
+         // Restore active workspace
+         if (session.currentWorkspaceId) {
+           await this.setActiveWorkspace(session.currentWorkspaceId);
+         }
+       }
+     } catch (e) {
+       console.warn('[WorkspaceManager] Failed to load session:', e);
+     }
+   }
 
   private saveCurrentWorkspaceState(): void {
     if (!this.currentWorkspace) return;
@@ -320,7 +320,7 @@ export class WorkspaceManager extends EventEmitter {
     }
   }
 
-  private async loadWorkspaces(): Promise<void> {
+  async loadWorkspaces(): Promise<void> {
     try {
       const data = await this.storage.get('zyncpdf-workspaces');
       if (data && data.workspaces) {
