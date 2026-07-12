@@ -3,8 +3,8 @@ import legacy from '@vitejs/plugin-legacy';
 
 export default defineConfig({
   root: '.',
-  base: './',
-  publicDir: 'vendor',
+  base: '/',
+  publicDir: 'public',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -25,27 +25,6 @@ export default defineConfig({
         main: 'index.html'
       },
       output: {
-        manualChunks: {
-          'vendor-pdf': ['pdf-lib', 'pdfjs-dist'],
-          'vendor-utils': ['jszip'],
-          'components': [
-            './components/navbar.js',
-            './components/footer.js',
-            './components/modal.js',
-            './components/toast.js',
-            './components/command-palette.js',
-            './components/toolbar.js',
-            './components/dropdown.js'
-          ],
-          'utils': [
-            './utils/pdf.js',
-            './utils/image.js',
-            './utils/file.js',
-            './utils/ui.js',
-            './utils/history.js',
-            './utils/theme.js'
-          ]
-        },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
@@ -64,7 +43,6 @@ export default defineConfig({
         }
       }
     },
-    target: 'es2022',
     cssCodeSplit: true,
     modulePreload: {
       polyfill: true
@@ -78,23 +56,26 @@ export default defineConfig({
       'Cross-Origin-Opener-Policy': 'same-origin'
     }
   },
-  optimizeDeps: {
+optimizeDeps: {
     include: ['pdf-lib', 'pdfjs-dist', 'jszip'],
-    exclude: []
-  },
+    exclude: [],
+    enabled: false
+},
   plugins: [
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-      modernPolyfills: true
-    })
+    // legacy({
+    //   targets: ['defaults', 'not IE 11'],
+    //   modernPolyfills: true
+    // })
   ],
   resolve: {
     alias: {
       '@': '/src',
-      '@components': '/components',
-      '@utils': '/utils',
-      '@pages': '/pages',
-      '@assets': '/assets'
+      '@components': '/src/components',
+      '@utils': '/src/utils',
+      '@pages': '/src/pages',
+      '@assets': '/assets',
+      '@storage': '/src/storage',
+      '@workers': '/src/workers'
     }
   },
   css: {
