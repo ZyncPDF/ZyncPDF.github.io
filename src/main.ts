@@ -3,8 +3,8 @@
  * Initializes the entire application
  */
 
-import { ZyncPDFApp } from './core/app.js';
-import { EventEmitter } from './utils/event-emitter.js';
+import { ZyncPDFApp } from './core/app';
+import { EventEmitter } from './utils/event-emitter';
 
 // Make EventEmitter available globally for workers
 (globalThis as any).EventEmitter = EventEmitter;
