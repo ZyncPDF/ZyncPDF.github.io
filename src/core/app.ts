@@ -3,7 +3,7 @@
  * Main entry point and application controller
  */
 
-import { AppSettings, Theme, PDFDocument, ToolMode, EventType, AppEvent, KeyboardShortcut } from '../types/index';
+import { AppSettings, Theme, PDFDocument, ToolMode, EventType, AppEvent, KeyboardShortcut, DEFAULT_SETTINGS } from '../types/index';
 import { EventEmitter } from '../utils/event-emitter';
 import { StorageManager } from '../storage/storage-manager.js';
 import { ThemeManager } from '../utils/theme-manager.js';
