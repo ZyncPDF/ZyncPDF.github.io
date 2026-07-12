@@ -691,9 +691,8 @@ export class StorageManager {
         await this.addRecentFile(file);
       }
     }
-  }
 }
-  
+
   /**
    * Get a value from the settings store by key.
    */
@@ -759,7 +758,7 @@ export class StorageManager {
       request.onerror = () => reject(request.error);
     });
   }
-
+}
 
 // Export singleton
 export const storage = new StorageManager();
