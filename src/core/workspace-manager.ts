@@ -162,8 +162,8 @@ async initialize(): Promise<void> {
     const doc = this.app.documentManager.documents.get(tab.documentId);
     if (doc?.isModified) {
       const save = confirm(`Save changes to "${tab.title}" before closing?`);
-      if (save) {
-        await this.app.documentManager.saveDocument(this.app.documentManager.documents.get(tab.documentId)!);
+      if (save && doc) {
+        await this.app.documentManager.saveDocument(doc);
       }
     }
 

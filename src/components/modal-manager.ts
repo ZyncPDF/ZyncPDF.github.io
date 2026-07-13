@@ -45,6 +45,10 @@ export class ModalManager extends EventEmitter {
     });
   }
 
+  initialize(): Promise<void> {
+    return Promise.resolve();
+  }
+
   async show(options: ModalOptions): Promise<any> {
     return new Promise((resolve) => {
       const id = this.generateId();

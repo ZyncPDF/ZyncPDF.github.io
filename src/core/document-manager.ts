@@ -306,20 +306,23 @@ export class DocumentManager extends EventEmitter {
     this.emit('document:saved', doc);
   }
 
-  async saveAs(doc: PDFDocument): Promise<void> {
-    // Would show file save dialog
-    // For now, just save
+  async save(): Promise<void> {
+    const doc = this.getActiveDocument();
+    if (!doc) return;
     await this.saveDocument(doc);
   }
 
-  async export(doc: PDFDocument, options: ExportOptions = {}): Promise<void> {
-    // Export with options
-    this.emit('export:start', { doc, options });
-    
-    // Implementation would depend on format
-    // For now, just save as PDF
+  async saveAs(doc?: PDFDocument): Promise<void> {
+    if (!doc) doc = this.getActiveDocument();
+    if (!doc) return;
     await this.saveDocument(doc);
-    
+  }
+
+  async export(doc?: PDFDocument, options: ExportOptions = {}): Promise<void> {
+    if (!doc) doc = this.getActiveDocument();
+    if (!doc) return;
+    this.emit('export:start', { doc, options });
+    await this.saveDocument(doc);
     this.emit('export:complete', { doc });
   }
 

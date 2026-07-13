@@ -104,6 +104,10 @@ export class CommandPalette extends EventEmitter {
     this.bindEvents();
   }
 
+  initialize(): Promise<void> {
+    return Promise.resolve();
+  }
+
   /**
    * Render the command palette HTML
    */

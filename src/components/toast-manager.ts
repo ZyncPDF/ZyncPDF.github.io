@@ -52,6 +52,10 @@ export class ToastManager extends EventEmitter {
     container.setAttribute('aria-live', 'polite');
   }
 
+  initialize(): Promise<void> {
+    return Promise.resolve();
+  }
+
   show(options: ToastOptions): string {
     if (!this.container) {
       console.warn('[ToastManager] Container not mounted');
