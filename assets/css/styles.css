@@ -937,6 +937,48 @@ mark {
 .tool-card[data-popular="true"] .tool-card-popular-badge { display: inline-flex; }
 
 /* ============================================
+   FAVORITE BUTTON (Privacy-Gated)
+   ============================================ */
+.tool-card-fav {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.tool-card-fav:hover {
+  background: var(--accent-tint);
+  border-color: var(--accent-tint-border);
+  color: var(--accent-dark);
+}
+
+.tool-card-fav svg { width: 16px; height: 16px; }
+
+.tool-card-fav-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.8);
+}
+
+.tool-card-fav.is-fav {
+  background: var(--accent-tint);
+  border-color: var(--accent-tint-border);
+  color: var(--accent-dark);
+}
+
+/* ============================================
    NO RESULTS
    ============================================ */
 .no-results {

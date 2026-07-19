@@ -74,11 +74,37 @@
                 <!-- Category links injected by JS -->
             </div>
 
+            <!-- Personal (History/Favorites) — shown only if enabled -->
+            <div id="sidebar-personal" style="display:none;">
+                <div class="sidebar-section-label">Personal</div>
+                <div class="sidebar-nav" id="sidebar-personal-nav">
+                    <button class="sidebar-link" data-sidebar-cat="history" id="nav-history" style="display:none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        History
+                        <span class="sidebar-link-count" id="history-count">0</span>
+                    </button>
+                    <button class="sidebar-link" data-sidebar-cat="favorites" id="nav-favorites" style="display:none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Favorites
+                        <span class="sidebar-link-count" id="favorites-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="sidebar-section-label">Settings</div>
+            <div class="sidebar-nav" id="sidebar-settings-nav">
+                <button class="sidebar-link" id="nav-settings" data-sidebar-cat="settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        Privacy & Data
+                    </button>
+                </div>
+
             <!-- Privacy / History Toggle (bottom of sidebar) -->
             <div class="privacy-toggle-wrap">
                 <span class="privacy-toggle-label">Privacy</span>
                 <div class="toggle-switch" id="history-toggle" role="switch" aria-checked="false" tabindex="0">
-                    <span class="toggle-switch-text">Save history</span>
+                    <span class="toggle-switch-text">Enable History & Favorites</span>
                     <div class="toggle-track">
                         <div class="toggle-thumb"></div>
                     </div>
@@ -151,6 +177,58 @@
                 <div class="no-results-sub">Try a different keyword or browse categories from the sidebar.</div>
             </div>
 
+            <!-- Settings Panel (hidden by default) -->
+            <div id="settings-panel" class="panel" style="display:none;">
+                <div class="panel-header">
+                    <div class="panel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+                    <div class="panel-title-group">
+                        <h2 class="panel-title">Privacy & Data</h2>
+                        <p class="panel-subtitle">Control how your data is stored locally</p>
+                    </div>
+                    <button class="panel-badge" id="settings-close-btn" style="cursor:pointer;border:none;font-size:1.2rem;padding:4px 10px;">✕</button>
+                </div>
+                <div class="panel-body">
+                    <div style="max-width:600px;">
+                        <div style="margin-bottom:24px;padding:16px;border-radius:12px;background:var(--accent-tint);border:1px solid var(--accent-tint-border);">
+                            <p style="font-size:0.85rem;font-weight:600;color:var(--accent-dark);margin:0 0 4px;">Your Privacy Matters</p>
+                            <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">All data is stored <strong>only in your browser</strong>. Nothing is ever sent to a server. You can clear or disable history at any time.</p>
+                        </div>
+
+                        <div style="display:flex;flex-direction:column;gap:16px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border-radius:12px;border:1px solid var(--border-subtle);background:var(--bg-card);">
+                                <div>
+                                    <p style="font-size:0.9rem;font-weight:600;color:var(--text-primary);margin:0 0 4px;">Enable Local History & Favorites</p>
+                                    <p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Store tool usage history and favorites in IndexedDB. Required for heart icon and history panel.</p>
+                                </div>
+                                <div class="toggle-switch" id="settings-history-toggle" role="switch" aria-checked="false" tabindex="0" style="flex-shrink:0;">
+                                    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                                </div>
+                            </div>
+
+                            <div id="settings-history-options" style="display:none;flex-direction:column;gap:12px;padding-left:8px;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px;border-radius:10px;border:1px solid var(--border-subtle);">
+                                    <div>
+                                        <p style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin:0 0 2px;">Auto-Delete History</p>
+                                        <p style="font-size:0.72rem;color:var(--text-muted);margin:0;">Automatically remove entries after a time period.</p>
+                                    </div>
+                                    <select id="settings-auto-expire" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border-subtle);background:var(--bg-input);color:var(--text-primary);font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                                        <option value="">Never</option>
+                                        <option value="1">After 24 hours</option>
+                                        <option value="7">After 7 days</option>
+                                        <option value="30">After 30 days</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                                    <button id="settings-pause-btn" class="btn-secondary" style="padding:8px 16px;border-radius:8px;font-size:0.8rem;">Pause Tracking</button>
+                                    <button id="settings-clear-btn" class="btn-secondary" style="padding:8px 16px;border-radius:8px;font-size:0.8rem;color:var(--danger);border-color:var(--danger);">Clear All History</button>
+                                </div>
+                                <p id="settings-status" style="font-size:0.72rem;color:var(--text-muted);margin:0;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -205,6 +283,9 @@
     <!-- ==================== SCRIPTS ==================== -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.basic.min.js"></script>
+    <script src="assets/js/privacy-settings.js"></script>
+    <script src="assets/js/db-manager.js"></script>
+    <script src="assets/js/sidebar-ui.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/chatbot-global.js"></script>
     <script>

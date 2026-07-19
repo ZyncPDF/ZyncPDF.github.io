@@ -420,11 +420,24 @@
         var statusClass = (tool.status === 'coming') ? 'coming' : 'active';
         var statusLabel = (tool.status === 'coming') ? 'Soon' : 'Active';
         var popularAttr = tool.popular ? ' data-popular="true"' : '';
+        var favsEnabled = (typeof window.ZyncPrivacy !== 'undefined' && typeof window.ZyncPrivacy.isFavoritesEnabled === 'function') ? window.ZyncPrivacy.isFavoritesEnabled() : false;
+
+        var favBtn = '';
+        if (favsEnabled) {
+            favBtn = '<button class="tool-card-fav" data-fav-id="' + esc(tool.id) + '" aria-label="Toggle favorite" title="Add to favorites">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+            '</button>';
+        } else {
+            favBtn = '<button class="tool-card-fav tool-card-fav-disabled" disabled aria-label="Favorites disabled" title="Enable Favorites in Settings to save tools">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+            '</button>';
+        }
 
         return '<a href="/tool.html?id=' + esc(tool.id) + '" class="tool-card" data-tool-id="' + esc(tool.id) + '"' + popularAttr + '>' +
             '<div class="tool-card-top">' +
                 '<div class="tool-card-icon"><i data-lucide="' + esc(iconName) + '"></i></div>' +
                 '<span class="tool-card-status ' + statusClass + '">' + statusLabel + '</span>' +
+                favBtn +
             '</div>' +
             '<div class="tool-card-title">' + hl(tool.name, query) + '</div>' +
             '<div class="tool-card-desc">' + hl(tool.description || '', query) + '</div>' +
@@ -710,24 +723,206 @@
         var toggle = $('#history-toggle');
         if (!toggle) return;
 
-        try {
-            var stored = localStorage.getItem(CONFIG.historyKey);
-            state.historyEnabled = stored === '1';
-        } catch (e) { /* ignore */ }
+        function updateUI(settings) {
+            if (settings.historyEnabled) toggle.classList.add('on');
+            else toggle.classList.remove('on');
+            toggle.setAttribute('aria-checked', settings.historyEnabled ? 'true' : 'false');
 
-        if (state.historyEnabled) toggle.classList.add('on');
-        else toggle.classList.remove('on');
+            // Show/hide personal sidebar section
+            var personalSection = document.getElementById('sidebar-personal');
+            var navHistory = document.getElementById('nav-history');
+            var navFavorites = document.getElementById('nav-favorites');
+            if (personalSection) {
+                personalSection.style.display = (settings.historyEnabled || settings.favoritesEnabled) ? 'block' : 'none';
+            }
+            if (navHistory) {
+                navHistory.style.display = settings.historyEnabled ? 'flex' : 'none';
+            }
+            if (navFavorites) {
+                navFavorites.style.display = settings.favoritesEnabled ? 'flex' : 'none';
+            }
 
+            // Refresh sidebar UI
+            if (window.ZyncSidebarUI && typeof window.ZyncSidebarUI.refresh === 'function') {
+                window.ZyncSidebarUI.refresh();
+            }
+        }
+
+        // Listen for privacy changes
+        if (typeof window.ZyncPrivacy !== 'undefined' && typeof window.ZyncPrivacy.onChange === 'function') {
+            window.ZyncPrivacy.onChange(updateUI);
+        }
+
+        // Initial state
+        if (typeof window.ZyncPrivacy !== 'undefined' && typeof window.ZyncPrivacy.getSettings === 'function') {
+            updateUI(window.ZyncPrivacy.getSettings());
+        }
+
+        // Toggle with confirmation
         toggle.addEventListener('click', function () {
-            var next = !state.historyEnabled;
-            toggle.classList.toggle('on', next);
-            toggleHistory(next);
+            if (typeof window.ZyncPrivacy === 'undefined') return;
+
+            var current = window.ZyncPrivacy.getSettings();
+            if (current.historyEnabled) {
+                // Disable — no confirmation needed, just disable
+                window.ZyncPrivacy.disableHistory();
+            } else {
+                // Enable — show confirmation modal
+                window.ZyncPrivacy.enableHistory(true).then(function (enabled) {
+                    if (enabled) {
+                        updateUI(window.ZyncPrivacy.getSettings());
+                    }
+                });
+            }
         });
     }
 
     /* =========================================
-       CHATBOT INIT
+       SETTINGS PANEL
        ========================================= */
+    function initSettingsPanel() {
+        var settingsPanel = $('#settings-panel');
+        var settingsNavBtn = $('#nav-settings');
+        var settingsCloseBtn = $('#settings-close-btn');
+        if (!settingsPanel || !settingsNavBtn) return;
+
+        function showSettings() {
+            settingsPanel.style.display = 'block';
+            settingsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            updateSettingsUI();
+        }
+
+        function hideSettings() {
+            settingsPanel.style.display = 'none';
+        }
+
+        settingsNavBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            showSettings();
+        });
+
+        if (settingsCloseBtn) {
+            settingsCloseBtn.addEventListener('click', hideSettings);
+        }
+
+        // Settings toggle
+        var settingsToggle = $('#settings-history-toggle');
+        var settingsOptions = $('#settings-history-options');
+        var autoExpireSelect = $('#settings-auto-expire');
+        var pauseBtn = $('#settings-pause-btn');
+        var clearBtn = $('#settings-clear-btn');
+        var statusEl = $('#settings-status');
+
+        function updateSettingsUI() {
+            if (!window.ZyncPrivacy) return;
+            var s = window.ZyncPrivacy.getSettings();
+            if (settingsToggle) {
+                settingsToggle.classList.toggle('on', s.historyEnabled);
+                settingsToggle.setAttribute('aria-checked', s.historyEnabled ? 'true' : 'false');
+            }
+            if (settingsOptions) {
+                settingsOptions.style.display = s.historyEnabled ? 'flex' : 'none';
+            }
+            if (autoExpireSelect) {
+                autoExpireSelect.value = s.autoExpireDays || '';
+            }
+            if (pauseBtn) {
+                pauseBtn.textContent = s.trackingPaused ? 'Resume Tracking' : 'Pause Tracking';
+            }
+            if (statusEl) {
+                if (s.historyEnabled) {
+                    statusEl.textContent = 'History is enabled. ' + (s.trackingPaused ? 'Tracking is paused.' : 'Tracking is active.');
+                } else {
+                    statusEl.textContent = 'History is disabled. No data is being stored.';
+                }
+            }
+        }
+
+        if (settingsToggle) {
+            settingsToggle.addEventListener('click', function () {
+                if (!window.ZyncPrivacy) return;
+                var current = window.ZyncPrivacy.getSettings();
+                if (current.historyEnabled) {
+                    window.ZyncPrivacy.disableHistory();
+                } else {
+                    window.ZyncPrivacy.enableHistory(true).then(function () {
+                        updateSettingsUI();
+                        if (window.ZyncSidebarUI) window.ZyncSidebarUI.refresh();
+                    });
+                }
+                updateSettingsUI();
+            });
+        }
+
+        if (autoExpireSelect) {
+            autoExpireSelect.addEventListener('change', function () {
+                if (!window.ZyncPrivacy) return;
+                var days = autoExpireSelect.value ? parseInt(autoExpireSelect.value, 10) : null;
+                window.ZyncPrivacy.setAutoExpire(days);
+                updateSettingsUI();
+            });
+        }
+
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', function () {
+                if (!window.ZyncPrivacy) return;
+                var current = window.ZyncPrivacy.getSettings();
+                window.ZyncPrivacy.togglePause(!current.trackingPaused);
+                updateSettingsUI();
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                if (!window.ZyncPrivacy) return;
+                if (confirm('Clear all history and favorites? This cannot be undone.')) {
+                    window.ZyncPrivacy.clearAllHistory().then(function () {
+                        updateSettingsUI();
+                        if (window.ZyncSidebarUI) window.ZyncSidebarUI.refresh();
+                    });
+                }
+            });
+        }
+
+        // Listen for privacy changes
+        if (typeof window.ZyncPrivacy !== 'undefined' && typeof window.ZyncPrivacy.onChange === 'function') {
+            window.ZyncPrivacy.onChange(updateSettingsUI);
+        }
+    }
+
+    /* =========================================
+       FAVORITE BUTTON HANDLER
+       ========================================= */
+    function initFavoriteButtons() {
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('.tool-card-fav');
+            if (!btn || btn.classList.contains('tool-card-fav-disabled')) return;
+
+            var toolId = btn.getAttribute('data-fav-id');
+            if (!toolId) return;
+
+            var tool = state.tools.find(function (t) { return t.id === toolId; });
+            if (!tool) return;
+
+            if (btn.classList.contains('is-fav')) {
+                if (window.ZyncDBManager && typeof window.ZyncDBManager.removeFavorite === 'function') {
+                    window.ZyncDBManager.removeFavorite(toolId).then(function () {
+                        btn.classList.remove('is-fav');
+                        btn.setAttribute('title', 'Add to favorites');
+                        btn.setAttribute('aria-label', 'Add to favorites');
+                    });
+                }
+            } else {
+                if (window.ZyncDBManager && typeof window.ZyncDBManager.addFavorite === 'function') {
+                    window.ZyncDBManager.addFavorite(tool).then(function () {
+                        btn.classList.add('is-fav');
+                        btn.setAttribute('title', 'Remove from favorites');
+                        btn.setAttribute('aria-label', 'Remove from favorites');
+                    });
+                }
+            }
+        });
+    }
     function initChatbot() {
         if (window.ZyncGlobalChat && typeof window.ZyncGlobalChat.init === 'function') {
             window.ZyncGlobalChat.init();
@@ -795,6 +990,8 @@
         initSearch();
         initThemeCycler();
         initHistoryToggle();
+        initSettingsPanel();
+        initFavoriteButtons();
         initChatbot();
         initMobileSidebar();
 
