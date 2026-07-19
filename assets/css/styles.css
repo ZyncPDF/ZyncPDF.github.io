@@ -52,6 +52,26 @@
   --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+[data-theme="grass"] {
+  --bg-base: #F4F6F8;
+  --bg-surface: #EDF1F5;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-input: #FFFFFF;
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E0;
+  --text-primary: #1A202C;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+  --accent: #00CC00;
+  --accent-light: #1FDD1F;
+  --accent-dark: #00A300;
+  --accent-glow: rgba(0, 204, 0, 0.20);
+  --shadow-card: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
 /* --- Base --- */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
