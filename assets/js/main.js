@@ -1,598 +1,605 @@
+/**
+ * ZyncTools — Main Application (Final Production Build)
+ *
+ * Responsibilities:
+ *  - Render tool grid with robust CSS Grid alignment
+ *  - Lucide icon fallback + createIcons() after every render
+ *  - 3-state theme cycler (dark → grass → light) with localStorage
+ *  - Fuse.js smart search
+ *  - Chatbot initialization
+ *  - Optional history/favorites toggle (IndexedDB, OFF by default)
+ *
+ * Namespace: window.ZyncApp
+ */
 (function () {
     'use strict';
 
-    const state = {
-        toolId: '',
-        toolType: 'file',
-        files: [],
-        textContent: '',
-        toolConfig: null,
-        modulesLoaded: new Set(),
-        isProcessing: false
+    /* =========================================
+       CONFIGURATION
+       ========================================= */
+    var CONFIG = {
+        dbUrl: '/tools-database.json',
+        storageKey: 'zync-tools-db',
+        themeKey: 'zync-theme-v2',
+        historyKey: 'zync-history-enabled',
+        fuseThreshold: 0.35,
+        fuseLimit: 8
     };
 
-    function $(selector) {
-        return document.querySelector(selector);
+    /* =========================================
+       STATE
+       ========================================= */
+    var state = {
+        tools: [],
+        categories: [],
+        activeCategory: 'all',
+        searchQuery: '',
+        fuse: null,
+        historyEnabled: false,
+        db: null
+    };
+
+    /* =========================================
+       ICON RESOLUTION — Lucide names + category fallbacks
+       ========================================= */
+    var CATEGORY_ICON_MAP = {
+        'images': 'image',
+        'pdf': 'file-text',
+        'video': 'video',
+        'audio': 'music',
+        'text': 'type',
+        'code': 'code',
+        'math': 'calculator',
+        'security': 'shield-check',
+        'ai': 'sparkles',
+        'media': 'film',
+        'seo': 'search',
+        'dev-utils': 'terminal'
+    };
+
+    function resolveIcon(tool) {
+        // 1. Per-tool override from ZyncToolIcons global
+        if (window.ZyncToolIcons && window.ZyncToolIcons[tool.id]) {
+            return window.ZyncToolIcons[tool.id];
+        }
+        // 2. Per-category override
+        if (window.ZyncToolIcons && window.ZyncToolIcons[tool.category]) {
+            return window.ZyncToolIcons[tool.category];
+        }
+        // 3. Tool's own icon field (already Lucide-compatible in final DB)
+        if (tool.icon) {
+            return tool.icon;
+        }
+        // 4. Category fallback
+        if (CATEGORY_ICON_MAP[tool.category]) {
+            return CATEGORY_ICON_MAP[tool.category];
+        }
+        // 5. Ultimate fallback
+        return 'tool';
     }
 
-    function escapeHtml(str) {
-        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    /* =========================================
+       HELPERS
+       ========================================= */
+    function $(sel) { return document.querySelector(sel); }
+    function $$(sel) { return Array.from(document.querySelectorAll(sel)); }
+
+    function esc(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
-    function formatFileSize(bytes) {
-        if (!bytes && bytes !== 0) return '0 Bytes';
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    function catName(id) {
+        var c = state.categories.find(function (x) { return x.id === id; });
+        return c ? c.name : id.charAt(0).toUpperCase() + id.slice(1);
     }
 
-    function getFileIcon(mimeType) {
-        if (!mimeType) return 'file';
-        if (mimeType.includes('pdf')) return 'file-text';
-        if (mimeType.includes('image')) return 'image';
-        if (mimeType.includes('audio')) return 'music';
-        if (mimeType.includes('video')) return 'video';
-        if (mimeType.includes('text') || mimeType.includes('json') || mimeType.includes('xml') || mimeType.includes('javascript')) return 'file-code';
-        if (mimeType.includes('zip') || mimeType.includes('compressed')) return 'archive';
-        return 'file';
+    function catIcon(id) {
+        var c = state.categories.find(function (x) { return x.id === id; });
+        if (c && c.icon) return c.icon;
+        return CATEGORY_ICON_MAP[id] || 'tool';
     }
 
-    function setStatus(message) {
-        const text = $('#progress-text');
-        if (text) text.textContent = message;
+    function hl(text, query) {
+        if (!query || !text) return esc(text);
+        var s = esc(text);
+        var terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+        terms.forEach(function (t) {
+            var re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+            s = s.replace(re, '<mark>$1</mark>');
+        });
+        return s;
     }
 
-    function setProgress(percent) {
-        const fill = $('#progress-fill');
-        const text = $('#progress-text');
-        const container = $('#progress-container');
-        if (!fill || !text || !container) return;
-        container.classList.remove('hidden');
-        fill.style.width = Math.max(0, Math.min(100, percent)) + '%';
-        text.textContent = Math.round(percent) + '%';
-    }
-
-    function showProgress() {
-        const container = $('#progress-container');
-        if (container) container.classList.remove('hidden');
-    }
-
-    function hideProgress() {
-        const container = $('#progress-container');
-        if (container) container.classList.add('hidden');
-        setProgress(0);
-    }
-
-    function updateProcessButton() {
-        const btn = $('#process-btn');
-        if (!btn) return;
-        if (state.toolType === 'generator') {
-            btn.disabled = state.isProcessing;
-        } else if (state.toolType === 'text') {
-            const textarea = $('#text-input');
-            const hasText = textarea && textarea.value.trim().length > 0;
-            btn.disabled = !hasText || state.isProcessing;
-        } else {
-            btn.disabled = state.files.length === 0 || state.isProcessing;
+    /* =========================================
+       LUCIDE ICON REFRESH
+       ========================================= */
+    function refreshLucide() {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
         }
     }
 
-    function addFileToList(file) {
-        const list = $('#file-list');
-        if (!list) return;
+    /* =========================================
+       SEARCH (Fuse.js + fallback)
+       ========================================= */
+    function initSearch() {
+        var input = $('#global-search');
+        if (!input) return;
 
-        const item = document.createElement('div');
-        item.className = 'flex items-center gap-3 p-3 rounded-xl bg-slate-900 border border-white/5 animate-fade-in-up';
-        item.dataset.fileId = `${file.name}_${file.size}_${file.lastModified}`;
-
-        const size = formatFileSize(file.size);
-        const icon = getFileIcon(file.type);
-
-        item.innerHTML = `
-            <i data-lucide="${icon}" class="text-accent text-lg"></i>
-            <div class="flex-1 min-w-0">
-                <div class="text-sm font-medium text-white truncate">${escapeHtml(file.name)}</div>
-                <div class="text-xs text-gray-500">${size}</div>
-            </div>
-            <button class="remove-file w-8 h-8 rounded-lg hover:bg-red-500/10 text-gray-500 hover:text-red-400 flex items-center justify-center transition-colors" data-name="${escapeHtml(file.name)}" data-size="${file.size}" data-modified="${file.lastModified}">
-                <i data-lucide="x" class="text-xs"></i>
-            </button>
-        `;
-
-        list.appendChild(item);
-        if (window.lucide) lucide.createIcons();
+        var debounce;
+        input.addEventListener('input', function () {
+            clearTimeout(debounce);
+            var val = input.value;
+            debounce = setTimeout(function () {
+                state.searchQuery = val;
+                state.activeCategory = 'all';
+                updateSidebarActive();
+                renderAll();
+            }, 180);
+        });
     }
 
-    function removeFile(name, size, modified) {
-        state.files = state.files.filter(f => !(f.name === name && f.size === size && f.lastModified === modified));
-        renderFileList();
-        updateProcessButton();
+    function searchTools(query) {
+        if (!query) return state.tools;
+        var terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+
+        // Fuse.js path
+        if (state.fuse) {
+            try {
+                var results = state.fuse.search(query, { limit: CONFIG.fuseLimit });
+                return results.map(function (r) { return r.item; });
+            } catch (e) {
+                console.warn('[ZyncApp] Fuse search error, falling back:', e);
+            }
+        }
+
+        // Fallback: simple AND filter
+        return state.tools.filter(function (t) {
+            var hay = [t.name, t.description, (t.tags || []).join(' ')].join(' ').toLowerCase();
+            return terms.every(function (term) { return hay.indexOf(term) !== -1; });
+        });
     }
 
-    function renderFileList() {
-        const list = $('#file-list');
-        if (list) list.innerHTML = '';
-        state.files.forEach(f => addFileToList(f));
+    function initFuse() {
+        if (typeof Fuse === 'undefined') {
+            console.warn('[ZyncApp] Fuse.js not loaded; using fallback search.');
+            return;
+        }
+        state.fuse = new Fuse(state.tools, {
+            keys: [
+                { name: 'name', weight: 0.4 },
+                { name: 'description', weight: 0.35 },
+                { name: 'tags', weight: 0.15 },
+                { name: 'category', weight: 0.1 }
+            ],
+            threshold: CONFIG.fuseThreshold,
+            includeScore: true,
+            minMatchCharLength: 2,
+            ignoreLocation: true
+        });
     }
 
-    function clearFileList() {
-        const list = $('#file-list');
-        if (list) list.innerHTML = '';
+    /* =========================================
+       RENDER — Tool Card
+       ========================================= */
+    function renderCard(tool, query) {
+        var iconName = resolveIcon(tool);
+        var statusClass = (tool.status === 'coming') ? 'coming' : 'active';
+        var statusLabel = (tool.status === 'coming') ? 'Soon' : 'Active';
+        var popularAttr = tool.popular ? ' data-popular="true"' : '';
+
+        return '<a href="/tool.html?id=' + esc(tool.id) + '" class="tool-card" data-tool-id="' + esc(tool.id) + '"' + popularAttr + '>' +
+            '<div class="tool-card-top">' +
+                '<div class="tool-card-icon"><i data-lucide="' + esc(iconName) + '"></i></div>' +
+                '<span class="tool-card-status ' + statusClass + '">' + statusLabel + '</span>' +
+            '</div>' +
+            '<div class="tool-card-title">' + hl(tool.name, query) + '</div>' +
+            '<div class="tool-card-desc">' + hl(tool.description || '', query) + '</div>' +
+            '<div class="tool-card-tags">' +
+                (tool.tags || []).slice(0, 4).map(function (tag) {
+                    return '<span class="tool-card-tag">#' + esc(tag) + '</span>';
+                }).join('') +
+            '</div>' +
+            (tool.popular ? '<div class="tool-card-popular-badge"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Popular</div>' : '') +
+        '</a>';
     }
 
-    function clearResults() {
-        const section = $('#results-section');
-        if (section) section.innerHTML = '';
+    /* =========================================
+       RENDER — Category Panels
+       ========================================= */
+    function renderPanels(tools, query) {
+        var container = $('#dashboard');
+        var noResults = $('#no-results');
+        if (!container) return;
+
+        if (!tools || tools.length === 0) {
+            container.innerHTML = '';
+            if (noResults) noResults.classList.add('visible');
+            return;
+        }
+        if (noResults) noResults.classList.remove('visible');
+
+        var grouped = {};
+        var order = [];
+        tools.forEach(function (t) {
+            if (!grouped[t.category]) { grouped[t.category] = []; order.push(t.category); }
+            grouped[t.category].push(t);
+        });
+
+        var html = '';
+        order.forEach(function (catId) {
+            var catTools = grouped[catId] || [];
+            var cName = catName(catId);
+            var cIcon = catIcon(catId);
+
+            html += '<div class="panel" data-category="' + esc(catId) + '">' +
+                '<div class="panel-header">' +
+                    '<div class="panel-icon"><i data-lucide="' + esc(cIcon) + '"></i></div>' +
+                    '<div class="panel-title-group">' +
+                        '<h2 class="panel-title">' + esc(cName) + '</h2>' +
+                        '<p class="panel-subtitle">' + catTools.length + ' tool' + (catTools.length !== 1 ? 's' : '') + '</p>' +
+                    '</div>' +
+                    '<span class="panel-badge">' + catTools.length + '</span>' +
+                '</div>' +
+                '<div class="panel-body">' +
+                    '<div class="tools-grid">' +
+                        catTools.map(function (t) { return renderCard(t, query); }).join('') +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        });
+
+        container.innerHTML = html;
+        refreshLucide();
     }
 
-    function addResultItem(result) {
-        const section = $('#results-section');
-        if (!section) return;
+    function renderAll() {
+        var tools = state.tools;
+        if (state.searchQuery) {
+            tools = searchTools(state.searchQuery);
+        } else if (state.activeCategory !== 'all') {
+            tools = tools.filter(function (t) { return t.category === state.activeCategory; });
+        }
+        renderPanels(tools, state.searchQuery);
+    }
 
-        const item = document.createElement('div');
-        item.className = 'flex items-start justify-between gap-4 p-4 rounded-xl bg-slate-900 border border-white/5 animate-fade-in-up';
+    /* =========================================
+       SIDEBAR
+       ========================================= */
+    function renderSidebar() {
+        var nav = $('#sidebar-nav');
+        var catNav = $('#sidebar-categories');
+        var mobileBar = $('#mobile-cat-bar');
+        if (!nav && !catNav) return;
 
-        const size = result.size || result.blob?.size || 0;
-        const type = result.type || (result.blob?.type) || '';
-        const isText = !!result.text;
-        const textContent = result.text || '';
+        var totalTools = state.tools.length;
 
-        const sizeStr = size ? formatFileSize(size) : (textContent ? textContent.length + ' chars' : '');
+        if (nav) {
+            nav.innerHTML =
+                '<button class="sidebar-link active" data-sidebar-cat="all">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' +
+                    'All Tools' +
+                    '<span class="sidebar-link-count">' + totalTools + '</span>' +
+                '</button>';
+        }
 
-        item.innerHTML = `
-            <div class="flex items-start gap-3 min-w-0 flex-1">
-                <i data-lucide="${isText ? 'file-text' : getFileIcon(type)}" class="text-accent mt-0.5"></i>
-                <div class="min-w-0 flex-1">
-                    <div class="text-sm font-medium text-white truncate">${escapeHtml(result.name)}</div>
-                    <div class="text-xs text-gray-500">${escapeHtml(sizeStr)}${type && !isText ? ' • ' + escapeHtml(type) : ''}</div>
-                    ${isText && textContent ? `<pre class="mt-2 text-xs text-gray-400 bg-slate-950/50 rounded-lg p-3 overflow-auto max-h-48 whitespace-pre-wrap break-words border border-white/5">${escapeHtml(textContent)}</pre>` : ''}
-                </div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-                ${isText && textContent ? `<button class="copy-btn btn-secondary text-xs py-2 px-3" data-text="${escapeHtml(textContent)}"><i data-lucide="copy" class="mr-1.5"></i>Copy</button>` : ''}
-                ${result.url ? `<a href="${result.url}" download="${escapeHtml(result.name)}" class="btn-secondary text-xs py-2 px-3"><i data-lucide="download" class="mr-1.5"></i>Download</a>` : ''}
-                ${result.previewHtml ? `<button class="preview-btn btn-secondary text-xs py-2 px-3"><i data-lucide="eye" class="mr-1.5"></i>Preview</button>` : ''}
-            </div>
-        `;
+        if (catNav) {
+            catNav.innerHTML = state.categories.map(function (c) {
+                var count = state.tools.filter(function (t) { return t.category === c.id; }).length;
+                return '<button class="sidebar-link" data-sidebar-cat="' + esc(c.id) + '">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>' +
+                    esc(c.name) +
+                    '<span class="sidebar-link-count">' + count + '</span>' +
+                '</button>';
+            }).join('');
+        }
 
-        section.appendChild(item);
-        if (window.lucide) lucide.createIcons();
+        if (mobileBar) {
+            mobileBar.innerHTML =
+                '<button class="mobile-cat-btn active" data-mobile-cat="all">All</button>' +
+                state.categories.map(function (c) {
+                    return '<button class="mobile-cat-btn" data-mobile-cat="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+                }).join('');
+        }
 
-        const copyBtn = item.querySelector('.copy-btn');
-        if (copyBtn) {
-            copyBtn.addEventListener('click', async () => {
-                try {
-                    await navigator.clipboard.writeText(copyBtn.dataset.text);
-                    const original = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i data-lucide="check" class="mr-1.5"></i>Copied';
-                    if (window.lucide) lucide.createIcons({ name: 'check', root: copyBtn.querySelector('i') });
-                    setTimeout(() => { copyBtn.innerHTML = original; if (window.lucide) lucide.createIcons(); }, 2000);
-                } catch (e) {
-                    showError('Failed to copy to clipboard');
-                }
+        // Bind click handlers
+        bindNavClicks('#sidebar-nav');
+        bindNavClicks('#sidebar-categories');
+
+        if (mobileBar) {
+            mobileBar.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-mobile-cat]');
+                if (!btn) return;
+                $$('#mobile-cat-bar .mobile-cat-btn').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                setCategory(btn.getAttribute('data-mobile-cat'));
             });
         }
     }
 
-    function createPreviewModal() {
-        const modal = document.createElement('div');
-        modal.id = 'preview-modal';
-        modal.className = 'fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4';
-        modal.innerHTML = `
-            <div class="bg-slate-900 border border-white/5 rounded-2xl w-full max-w-3xl max-h-[85vh] overflow-hidden shadow-2xl">
-                <div class="flex items-center justify-between p-4 border-b border-white/5">
-                    <h3 class="font-semibold text-white">Preview</h3>
-                    <button id="preview-close-btn" class="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
-                        <i data-lucide="x"></i>
-                    </button>
-                </div>
-                <div id="preview-modal-body" class="p-4 overflow-auto max-h-[70vh]"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        $('#preview-close-btn').addEventListener('click', () => {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
+    function bindNavClicks(selector) {
+        var container = $(selector);
+        if (!container) return;
+        container.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-sidebar-cat]');
+            if (!btn) return;
+            setCategory(btn.getAttribute('data-sidebar-cat'));
         });
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
+    }
+
+    function setCategory(catId) {
+        state.activeCategory = catId;
+        state.searchQuery = '';
+        var searchInput = $('#global-search');
+        if (searchInput) searchInput.value = '';
+        updateSidebarActive();
+        renderAll();
+        var dash = $('#dashboard');
+        if (dash) dash.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateSidebarActive() {
+        $$('[data-sidebar-cat]').forEach(function (el) {
+            el.classList.toggle('active', el.getAttribute('data-sidebar-cat') === state.activeCategory);
         });
-        return modal;
-    }
-
-    function showNotification(message, type = 'info') {
-        const existing = $('.zync-notification');
-        if (existing) existing.remove();
-
-        const el = document.createElement('div');
-        el.className = `zync-notification ${type}`;
-        const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
-        el.innerHTML = `<i class="fas fa-${icon}"></i> <span>${escapeHtml(message)}</span>`;
-        document.body.appendChild(el);
-
-        setTimeout(() => {
-            el.style.opacity = '0';
-            setTimeout(() => el.remove(), 300);
-        }, 4000);
-    }
-
-    function showError(message) {
-        showNotification(message, 'error');
-    }
-
-    function validateFile(file) {
-        if (!state.toolConfig) return true;
-        const accepted = (state.toolConfig.accept || '').split(',').map(s => s.trim());
-        if (accepted.includes('*') || accepted.length === 0 || !state.toolConfig.accept) return true;
-
-        const ext = '.' + file.name.split('.').pop().toLowerCase();
-        const lowerName = file.name.toLowerCase();
-
-        const valid = accepted.some(rule => {
-            if (rule === ext) return true;
-            if (rule.startsWith('.') && lowerName.endsWith(rule)) return true;
-            return false;
+        $$('#mobile-cat-bar .mobile-cat-btn').forEach(function (btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-mobile-cat') === state.activeCategory);
         });
-
-        if (!valid) {
-            showError(`Unsupported file: ${file.name}`);
-        }
-        return valid;
     }
 
-    function handleFiles(fileList) {
-        Array.from(fileList).forEach(file => {
-            if (validateFile(file)) {
-                const exists = state.files.find(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified);
-                if (!exists) {
-                    state.files.push(file);
-                    addFileToList(file);
-                }
-            }
-        });
-        updateProcessButton();
+    /* =========================================
+       STATS
+       ========================================= */
+    function renderStats() {
+        var total = state.tools.length;
+        var active = state.tools.filter(function (t) { return t.status === 'active'; }).length;
+        var popular = state.tools.filter(function (t) { return t.popular; });
+        var popularName = popular.length > 0 ? popular[0].name : '—';
+
+        $('#stat-total').textContent = total.toLocaleString();
+        $('#stat-categories').textContent = state.categories.length;
+        $('#stat-popular').textContent = popularName;
+        $('#stat-active').textContent = active.toLocaleString();
     }
 
-    async function loadScripts(urls) {
-        for (const url of urls) {
-            if (state.modulesLoaded.has(url)) continue;
-            await new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = url;
-                script.async = true;
-                script.onload = () => {
-                    state.modulesLoaded.add(url);
-                    resolve();
-                };
-                script.onerror = () => reject(new Error('Failed to load script: ' + url));
-                document.head.appendChild(script);
-            });
-        }
-    }
+    /* =========================================
+       THEME CYCLER (dark → grass → light)
+       ========================================= */
+    var CYCLE = ['dark', 'grass', 'light'];
+    var THEME_META = {
+        dark:  { name: 'Dark',  icon: 'moon',        hint: 'Neon-green on charcoal' },
+        grass: { name: 'Grass', icon: 'sun-medium',  hint: 'Light, grass-green cards' },
+        light: { name: 'Light', icon: 'sun',         hint: 'Pure white + blue accent' }
+    };
 
-    async function loadToolModule(toolId) {
-        if (window.ZyncToolBridge) {
-            const bridgeModule = window.ZyncToolBridge.getModule(toolId);
-            if (bridgeModule) return bridgeModule;
-        }
-        if (window.ZyncSeoTools) {
-            const seoModule = window.ZyncSeoTools.getModule(toolId);
-            if (seoModule) return seoModule;
-        }
-        const script = $('#tool-module-script');
-        if (!script) return null;
-        const modulePath = `tools/${toolId}.js`;
-        script.src = modulePath;
-        await new Promise((resolve, reject) => {
-            script.onload = resolve;
-            script.onerror = () => reject(new Error('Failed to load tool module: ' + modulePath));
-        });
-        if (typeof window.ZyncTool === 'function') return { process: window.ZyncTool };
-        if (typeof window.ZyncTool === 'object' && typeof window.ZyncTool.process === 'function') return window.ZyncTool;
+    function getStoredTheme() {
+        try {
+            var v = localStorage.getItem(CONFIG.themeKey);
+            if (CYCLE.indexOf(v) !== -1) return v;
+        } catch (e) { /* ignore */ }
         return null;
     }
 
-    async function processFiles() {
-        if (state.isProcessing) return;
-
-        if (state.toolType === 'generator') {
-            // No input validation needed for generators
-        } else if (state.toolType === 'text') {
-            const textarea = $('#text-input');
-            if (!textarea || !textarea.value.trim()) {
-                showError('Please enter some text first.');
-                return;
-            }
-            state.textContent = textarea.value;
-            if (!state.textContent.trim()) {
-                showError('Please enter some text first.');
-                return;
-            }
-        } else {
-            if (!state.files.length) {
-                showError('Please add files first.');
-                return;
-            }
-        }
-
-        state.isProcessing = true;
-        updateProcessButton();
-        showProgress();
-        setProgress(0);
-        clearResults();
-
-        try {
-            let toolModule = window.ZyncTool;
-            if (!toolModule) {
-                toolModule = await loadToolModule(state.toolId);
-            }
-            if (!toolModule || (typeof toolModule.process !== 'function' && typeof toolModule.generate !== 'function')) {
-                throw new Error('Tool module is not implemented yet.');
-            }
-
-            if (state.toolConfig && state.toolConfig.cdns && state.toolConfig.cdns.length) {
-                setProgress(5);
-                await loadScripts(state.toolConfig.cdns);
-                setProgress(20);
-            }
-
-            let results;
-            if (state.toolType === 'generator') {
-                results = await toolModule.generate({
-                    setStatus,
-                    setProgress,
-                    addResultItem,
-                    showNotification,
-                    showError,
-                    config: state.toolConfig
-                });
-            } else if (state.toolType === 'text') {
-                results = await toolModule.process(state.textContent, {
-                    setStatus,
-                    setProgress,
-                    addResultItem,
-                    showNotification,
-                    showError,
-                    config: state.toolConfig
-                });
-            } else if (state.toolConfig && state.toolConfig.outputType === 'string' && state.files.length > 0) {
-                const fileText = await state.files[0].text();
-                results = await toolModule.process(fileText, {
-                    setStatus,
-                    setProgress,
-                    addResultItem,
-                    showNotification,
-                    showError,
-                    config: state.toolConfig
-                });
-            } else {
-                results = await toolModule.process(state.files, {
-                    setStatus,
-                    setProgress,
-                    addResultItem,
-                    showNotification,
-                    showError,
-                    config: state.toolConfig
-                });
-            }
-
-            setProgress(100);
-            if (!results || !results.length) {
-                showNotification('No results returned.', 'info');
-                return;
-            }
-
-            results.forEach(r => addResultItem(r));
-            showNotification(`Processed ${results.length} item(s).`, 'success');
-        } catch (err) {
-            console.error(err);
-            showError(err.message || 'Processing failed.');
-        } finally {
-            state.isProcessing = false;
-            updateProcessButton();
-            setTimeout(hideProgress, 1200);
-        }
+    function resolveTheme() {
+        return getStoredTheme() || 'dark';
     }
 
-    function buildRelatedTools() {
-        const container = $('#related-tools');
-        if (!container || !state.toolConfig) return;
-        const currentCategory = state.toolConfig.category;
-        const related = window.ZyncRegistry.getAllTools()
-            .filter(t => t.category === currentCategory && t.id !== state.toolId)
-            .slice(0, 6);
-
-        if (!related.length) {
-            container.innerHTML = '<p class="text-xs text-gray-500">No related tools found.</p>';
-            return;
-        }
-
-        container.innerHTML = related.map(t => {
-            const iconName = (window.ZyncToolIcons && window.ZyncToolIcons[t.id]) || window.ZyncToolIcons[t.category] || 'tool';
-            return `
-            <a href="/tool.html?id=${t.id}" class="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-white/[0.02] border border-transparent hover:border-white/5 transition-all group">
-                <div class="w-8 h-8 rounded-lg bg-accent/8 border border-accent/12 flex items-center justify-center text-accent text-xs flex-shrink-0 group-hover:bg-accent/12 transition-colors">
-                    <i data-lucide="${iconName}"></i>
-                </div>
-                <div class="min-w-0">
-                    <div class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors truncate">${escapeHtml(t.name)}</div>
-                </div>
-            </a>
-        `;
-        }).join('');
-        if (window.lucide) lucide.createIcons();
+    function applyTheme(theme) {
+        if (CYCLE.indexOf(theme) === -1) theme = 'dark';
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        root.classList.remove('theme-dark', 'theme-grass', 'theme-light');
+        root.classList.add('theme-' + theme);
+        root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+        updateThemeButton(theme);
     }
 
-    function setupToolPage() {
-        const params = new URLSearchParams(window.location.search);
-        const toolId = params.get('id') || '';
-        state.toolId = toolId;
-
-        const toolConfig = window.ZyncRegistry.getToolById(toolId);
-        if (!toolConfig) {
-            $('#tool-title').textContent = 'Tool Not Found';
-            $('#tool-description').textContent = 'The requested tool could not be found.';
-            return;
-        }
-
-        state.toolConfig = toolConfig;
-        state.toolType = toolConfig.type === 'generator' ? 'generator' : (toolConfig.outputType === 'string' || !toolConfig.accept || !toolConfig.accept.includes('.') ? 'text' : 'file');
-
-        document.title = `${toolConfig.name} — ZyncTools`;
-        $('#tool-title').textContent = toolConfig.name;
-        $('#tool-description').textContent = toolConfig.description;
-        const toolIconEl = $('#tool-icon');
-        if (toolIconEl) {
-            const iconName = (window.ZyncToolIcons && window.ZyncToolIcons[toolId]) || 'tool';
-            toolIconEl.setAttribute('data-lucide', iconName);
-            if (window.lucide) lucide.createIcons();
-        }
-
-        const fileInputSection = $('#file-input-section');
-        const textInputSection = $('#text-input-section');
-        const generatorInputSection = $('#generator-input-section');
-        const fileInput = $('#file-input');
-        const textInput = $('#text-input');
-        const processBtnText = $('#process-btn-text');
-
-        if (state.toolType === 'generator') {
-            if (fileInputSection) fileInputSection.classList.add('hidden');
-            if (textInputSection) textInputSection.classList.add('hidden');
-            if (generatorInputSection) generatorInputSection.classList.remove('hidden');
-            if (fileInput) fileInput.style.display = 'none';
-            if (textInput) textInput.style.display = 'none';
-            if (processBtnText) processBtnText.textContent = 'Generate';
-            if (fileInput) fileInput.removeAttribute('accept');
-        } else if (state.toolType === 'text') {
-            if (fileInputSection) fileInputSection.classList.add('hidden');
-            if (textInputSection) textInputSection.classList.remove('hidden');
-            if (generatorInputSection) generatorInputSection.classList.add('hidden');
-            if (fileInput) fileInput.style.display = 'none';
-            if (textInput) textInput.style.display = 'block';
-            if (processBtnText) processBtnText.textContent = 'Generate';
-            if (fileInput) fileInput.removeAttribute('accept');
-        } else {
-            if (fileInputSection) fileInputSection.classList.remove('hidden');
-            if (textInputSection) textInputSection.classList.add('hidden');
-            if (generatorInputSection) generatorInputSection.classList.add('hidden');
-            if (fileInput) fileInput.style.display = 'block';
-            if (textInput) textInput.style.display = 'none';
-            if (processBtnText) processBtnText.textContent = 'Process';
-            if (fileInput && toolConfig.accept) {
-                fileInput.accept = toolConfig.accept;
-            }
-        }
-
-        updateProcessButton();
-        buildRelatedTools();
-
-        if (window.ZyncSeoTools) {
-            const seoModule = window.ZyncSeoTools.getModule(toolId);
-            if (seoModule && typeof seoModule.init === 'function') {
-                seoModule.init();
-            }
-        }
+    function cycleTheme() {
+        var current = resolveTheme();
+        var idx = CYCLE.indexOf(current);
+        var next = CYCLE[(idx + 1) % CYCLE.length];
+        try { localStorage.setItem(CONFIG.themeKey, next); } catch (e) { /* ignore */ }
+        applyTheme(next);
+        return next;
     }
 
-    function bindEvents() {
-        const dropZone = $('#drop-zone');
-        const fileInput = $('#file-input');
+    function updateThemeButton(theme) {
+        var meta = THEME_META[theme] || THEME_META.dark;
+        var btn = $('[data-theme-cycle-btn]');
+        if (!btn) return;
 
-        if (dropZone && fileInput) {
-            dropZone.addEventListener('click', () => fileInput.click());
+        var label = btn.querySelector('[data-theme-cycle-label]');
+        var swatch = btn.querySelector('[data-theme-cycle-swatch]');
+        var iconEl = btn.querySelector('[data-theme-cycle-icon]');
 
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
-                dropZone.addEventListener(evt, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (evt === 'dragenter' || evt === 'dragover') {
-                        dropZone.classList.add('drag-over');
-                    } else {
-                        dropZone.classList.remove('drag-over');
+        if (label) label.textContent = meta.name;
+        if (iconEl) {
+            iconEl.setAttribute('data-lucide', meta.icon);
+            refreshLucide();
+        }
+        btn.setAttribute('aria-label', 'Theme: ' + meta.name + '. Click to switch.');
+        btn.setAttribute('title', meta.hint);
+    }
+
+    function initThemeCycler() {
+        applyTheme(resolveTheme());
+
+        // Delegate click on any theme cycle button
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-theme-cycle-btn]');
+            if (!btn) return;
+            e.preventDefault();
+            cycleTheme();
+        });
+    }
+
+    /* =========================================
+       HISTORY / FAVORITES (OFF by default)
+       ========================================= */
+    var historyDb = null;
+
+    function openHistoryDB() {
+        return new Promise(function (resolve, reject) {
+            if (historyDb) return resolve(historyDb);
+            try {
+                var request = indexedDB.open('zync-tools-history', 1);
+                request.onupgradeneeded = function (e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains('favorites')) {
+                        db.createObjectStore('favorites', { keyPath: 'id' });
                     }
-                });
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('drag-over');
-                handleFiles(e.dataTransfer.files);
-            });
-
-            fileInput.addEventListener('change', (e) => {
-                handleFiles(e.target.files);
-                fileInput.value = '';
-            });
-        }
-
-        $('#file-list')?.addEventListener('click', (e) => {
-            const removeBtn = e.target.closest('.remove-file');
-            if (removeBtn) {
-                const { name, size, modified } = removeBtn.dataset;
-                removeFile(name, Number(size), Number(modified));
+                };
+                request.onsuccess = function (e) {
+                    historyDb = e.target.result;
+                    resolve(historyDb);
+                };
+                request.onerror = function () { reject(new Error('IndexedDB unavailable')); };
+            } catch (err) {
+                reject(err);
             }
         });
+    }
 
-        const textInput = $('#text-input');
-        if (textInput) {
-            textInput.addEventListener('input', () => {
-                state.textContent = textInput.value;
-                updateProcessButton();
+    async function toggleHistory(enabled) {
+        state.historyEnabled = enabled;
+        try {
+            localStorage.setItem(CONFIG.historyKey, enabled ? '1' : '0');
+            if (enabled) {
+                await openHistoryDB();
+                console.log('[ZyncApp] History enabled — using IndexedDB');
+            }
+        } catch (e) {
+            console.warn('[ZyncApp] History toggle failed:', e);
+        }
+    }
+
+    function initHistoryToggle() {
+        var toggle = $('#history-toggle');
+        if (!toggle) return;
+
+        try {
+            var stored = localStorage.getItem(CONFIG.historyKey);
+            state.historyEnabled = stored === '1';
+        } catch (e) { /* ignore */ }
+
+        if (state.historyEnabled) toggle.classList.add('on');
+        else toggle.classList.remove('on');
+
+        toggle.addEventListener('click', function () {
+            var next = !state.historyEnabled;
+            toggle.classList.toggle('on', next);
+            toggleHistory(next);
+        });
+    }
+
+    /* =========================================
+       CHATBOT INIT
+       ========================================= */
+    function initChatbot() {
+        if (window.ZyncGlobalChat && typeof window.ZyncGlobalChat.init === 'function') {
+            window.ZyncGlobalChat.init();
+        }
+    }
+
+    /* =========================================
+       MOBILE SIDEBAR TOGGLE
+       ========================================= */
+    function initMobileSidebar() {
+        var toggle = $('#sidebar-toggle');
+        var sidebar = $('#app-sidebar');
+        if (!toggle || !sidebar) return;
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.toggle('mobile-open');
+        });
+
+        // Close sidebar when clicking main content on mobile
+        var main = $('#app-main');
+        if (main) {
+            main.addEventListener('click', function () {
+                if (sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                }
             });
         }
-
-        $('#process-btn')?.addEventListener('click', processFiles);
     }
 
-    async function init() {
+    /* =========================================
+       DATA LOADING
+       ========================================= */
+    async function loadData() {
         try {
-            await window.ZyncRegistry.loadRegistry();
-            setupToolPage();
-            bindEvents();
-            initThemeToggle();
+            var res = await fetch(CONFIG.dbUrl, { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            state.db = await res.json();
+            state.tools = (state.db.tools || []).filter(function (t) {
+                return t.status === 'active' || t.status === 'coming' || !t.status;
+            });
+            state.categories = state.db.categories || [];
         } catch (err) {
-            console.error('ZyncTools init failed:', err);
+            console.error('[ZyncApp] Failed to load tools database:', err);
+            state.tools = [];
+            state.categories = [];
         }
     }
 
-    function initThemeToggle() {
-        const btn = $('#theme-toggle');
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-            const next = window.ZyncTheme.toggle();
-            updateThemeIcon(next);
-        });
-        updateThemeIcon(window.ZyncTheme.getCurrent());
-    }
+    /* =========================================
+       BOOT
+       ========================================= */
+    async function boot() {
+        await loadData();
 
-    function updateThemeIcon(theme) {
-        const btn = $('#theme-toggle');
-        if (!btn) return;
-        const icon = btn.querySelector('i');
-        if (icon) {
-            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        if (state.tools.length === 0) {
+            var container = $('#dashboard');
+            if (container) container.innerHTML = '<div class="no-results visible"><div class="no-results-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="no-results-title">Failed to load tools</div><div class="no-results-sub">Check that tools-database.json is present.</div></div>';
+            return;
         }
+
+        initFuse();
+        renderStats();
+        renderSidebar();
+        renderPanels(state.tools, '');
+        initSearch();
+        initThemeCycler();
+        initHistoryToggle();
+        initChatbot();
+        initMobileSidebar();
+
+        // Final icon refresh after all renders
+        refreshLucide();
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
+    /* =========================================
+       PUBLIC API
+       ========================================= */
     window.ZyncApp = {
-        state,
-        processFiles,
-        addResultItem,
-        showNotification,
-        showError,
-        setProgress,
-        setStatus,
-        removeFile
+        state: state,
+        tools: state.tools,
+        categories: state.categories,
+        searchTools: searchTools,
+        renderAll: renderAll,
+        renderPanels: renderPanels,
+        renderCard: renderCard,
+        resolveIcon: resolveIcon,
+        cycleTheme: cycleTheme,
+        applyTheme: applyTheme,
+        toggleHistory: toggleHistory,
+        init: boot
     };
+
+    /* =========================================
+       START
+       ========================================= */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+
 })();
