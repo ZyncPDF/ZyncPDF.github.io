@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/assets/images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -21,29 +21,29 @@
       "name": "Merge PDF",
       "short_name": "Merge",
       "description": "Combine multiple PDFs",
-      "url": "/merge-pdf.html",
-      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+      "url": "/tools/merge-pdf.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Split PDF",
       "short_name": "Split",
       "description": "Split PDF into pages",
-      "url": "/split-pdf.html",
-      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+      "url": "/tools/split-pdf.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Compress PDF",
       "short_name": "Compress",
       "description": "Reduce PDF file size",
-      "url": "/compress-pdf.html",
-      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+      "url": "/tools/compress-pdf.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
     },
     {
       "name": "PDF Text Editor",
       "short_name": "Editor",
       "description": "Edit text in PDF",
-      "url": "/pdf-text-editor.html",
-      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+      "url": "/tools/pdf-text-editor.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
     }
   ]
 }

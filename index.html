@@ -1,53 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ZyncPDF - Professional PDF Workspace. Edit, annotate, merge, split, compress PDFs entirely in your browser. 100% private, open source, no uploads.">
-  <meta name="keywords" content="PDF editor, PDF annotator, merge PDF, split PDF, compress PDF, PDF text editor, privacy-first PDF">
-  <meta name="author" content="ZyncPDF Team">
-  <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="ZyncPDF - Professional PDF Workspace">
-  <meta property="og:description" content="Professional PDF editing in your browser. 100% private, no uploads, completely free.">
-  <meta property="og:image" content="/logo.png">
-  <meta property="og:url" content="https://zyncpdf.github.io/">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ZyncPDF - Professional PDF Workspace">
-  <meta name="twitter:description" content="Professional PDF editing in your browser. 100% private, no uploads, completely free.">
-  <meta name="twitter:image" content="/logo.png">
-  <link rel="canonical" href="https://zyncpdf.github.io/">
-  <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
-  <link rel="apple-touch-icon" href="/logo.png">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="modern-styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-  <title>ZyncPDF - Professional PDF Workspace</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="ZyncPDF — 100% private, open-source PDF toolkit. Merge, split, compress, convert, edit, rotate, and annotate PDFs entirely in your browser. No uploads, no registration, no cost.">
+    <meta name="keywords" content="PDF editor, merge PDF, split PDF, compress PDF, PDF converter, PDF tools, privacy-first PDF, browser PDF, free PDF tools">
+    <meta name="author" content="ZyncPDF Team">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ZyncPDF - 100% Private PDF Toolkit">
+    <meta property="og:description" content="Professional PDF tools in your browser. No uploads, no tracking, no registration.">
+    <meta property="og:image" content="/logo.png">
+    <meta property="og:url" content="https://zyncpdf.github.io/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ZyncPDF - 100% Private PDF Toolkit">
+    <meta name="twitter:description" content="Professional PDF tools in your browser. No uploads, no tracking, no registration.">
+    <meta name="twitter:image" content="/logo.png">
+    <link rel="canonical" href="https://zyncpdf.github.io/">
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="../assets/css/modern-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <script src="../assets/js/theme-switcher.js" defer></script>
+    <title>ZyncPDF - Professional PDF Workspace</title>
 </head>
 <body>
-  <div class="animated-bg" aria-hidden="true"></div>
-  
-  <noscript>
-    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; text-align: center; background: var(--bg-primary); color: var(--text-primary);">
-      <div style="max-width: 400px;">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1.5rem; opacity: 0.5;">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="9" y1="3" x2="9" y2="21"></line>
-          <line x1="15" y1="3" x2="15" y2="21"></line>
-        </svg>
-        <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">JavaScript Required</h1>
-        <p style="color: var(--text-secondary);">ZyncPDF requires JavaScript to run. Please enable JavaScript in your browser settings.</p>
-      </div>
-    </div>
-  </noscript>
+    <div class="animated-bg" aria-hidden="true"></div>
 
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="logo-link" style="text-decoration:none;">
+                <div class="logo">
+                    <img src="../assets/images/logo.png" alt="ZyncPDF Logo" class="logo-img">
+                    <span class="logo-text">ZyncPDF</span>
+                </div>
+            </a>
+            <nav class="nav">
+                <a href="#tools" class="nav-link">Tools</a>
+                <a href="support.html" class="nav-link">Support</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="changelog.html" class="nav-link">Changelog</a>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun sun-icon"></i>
+                <i class="fas fa-moon moon-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>All PDF tools. <span class="highlight">100% private.</span></h1>
+                <p class="hero-subtitle">Merge, split, compress, convert, edit, and sign PDFs directly in your browser. No uploads. No registration. No cost.</p>
+                <a href="#tools" class="btn-primary">Explore All Tools</a>
+            </div>
+        </section>
+
+        <section id="tools" class="tools-section">
+            <div class="container">
+                <div class="tools-category">
+                    <h2 class="category-title"><i class="fas fa-file-pdf"></i> PDF Tools</h2>
+                    <div class="tools-grid">
+                        <a href="merge-pdf.html" class="tool-card"><i class="fas fa-object-group"></i><span>Merge PDF</span></a>
+                        <a href="split-pdf.html" class="tool-card"><i class="fas fa-scissors"></i><span>Split PDF</span></a>
+                        <a href="compress-pdf.html" class="tool-card"><i class="fas fa-compress-alt"></i><span>Compress PDF</span></a>
+                        <a href="rotate-pdf.html" class="tool-card"><i class="fas fa-sync-alt"></i><span>Rotate PDF</span></a>
+                        <a href="extract-pages.html" class="tool-card"><i class="fas fa-file-export"></i><span>Extract Pages</span></a>
+                        <a href="remove-pages.html" class="tool-card"><i class="fas fa-trash-alt"></i><span>Remove Pages</span></a>
+                        <a href="sort-pages.html" class="tool-card"><i class="fas fa-sort"></i><span>Sort Pages</span></a>
+                        <a href="flatten-pdf.html" class="tool-card"><i class="fas fa-layer-group"></i><span>Flatten PDF</span></a>
+                        <a href="compare-pdfs.html" class="tool-card"><i class="fas fa-columns"></i><span>Compare PDFs</span></a>
+                        <a href="pdf-text-editor.html" class="tool-card"><i class="fas fa-pen"></i><span>PDF Text Editor</span></a>
+                        <a href="add-password.html" class="tool-card"><i class="fas fa-lock"></i><span>Add Password</span></a>
+                        <a href="remove-password.html" class="tool-card"><i class="fas fa-unlock"></i><span>Remove Password</span></a>
+                        <a href="edit-metadata.html" class="tool-card"><i class="fas fa-tag"></i><span>Edit Metadata</span></a>
+                        <a href="remove-metadata.html" class="tool-card"><i class="fas fa-eraser"></i><span>Remove Metadata</span></a>
+                    </div>
+                </div>
+
+                <div class="tools-category">
+                    <h2 class="category-title"><i class="fas fa-exchange-alt"></i> Convert PDF</h2>
+                    <div class="tools-grid">
+                        <a href="pdf-to-png.html" class="tool-card"><i class="fas fa-file-image"></i><span>PDF to PNG</span></a>
+                        <a href="pdf-to-jpeg.html" class="tool-card"><i class="fas fa-file-image"></i><span>PDF to JPEG</span></a>
+                        <a href="pdf-to-txt.html" class="tool-card"><i class="fas fa-file-alt"></i><span>PDF to Text</span></a>
+                        <a href="png-to-pdf.html" class="tool-card"><i class="fas fa-images"></i><span>PNG to PDF</span></a>
+                        <a href="jpeg-to-pdf.html" class="tool-card"><i class="fas fa-images"></i><span>JPEG to PDF</span></a>
+                        <a href="webp-to-pdf.html" class="tool-card"><i class="fas fa-images"></i><span>WebP to PDF</span></a>
+                        <a href="webp-to-png.html" class="tool-card"><i class="fas fa-images"></i><span>WebP to PNG</span></a>
+                        <a href="webp-to-jpeg.html" class="tool-card"><i class="fas fa-images"></i><span>WebP to JPEG</span></a>
+                        <a href="svg-to-pdf.html" class="tool-card"><i class="fas fa-bezier-curve"></i><span>SVG to PDF</span></a>
+                        <a href="svg-to-png.html" class="tool-card"><i class="fas fa-bezier-curve"></i><span>SVG to PNG</span></a>
+                        <a href="svg-to-jpeg.html" class="tool-card"><i class="fas fa-bezier-curve"></i><span>SVG to JPEG</span></a>
+                        <a href="heif-to-pdf.html" class="tool-card"><i class="fas fa-file-image"></i><span>HEIF/HEIC to PDF</span></a>
+                        <a href="html-to-pdf.html" class="tool-card"><i class="fas fa-code"></i><span>HTML to PDF</span></a>
+                        <a href="markdown-to-pdf.html" class="tool-card"><i class="fab fa-markdown"></i><span>Markdown to PDF</span></a>
+                        <a href="txt-to-pdf.html" class="tool-card"><i class="fas fa-file-alt"></i><span>Text to PDF</span></a>
+                        <a href="rtf-to-pdf.html" class="tool-card"><i class="fas fa-file-alt"></i><span>RTF to PDF</span></a>
+                        <a href="word-to-pdf.html" class="tool-card"><i class="fas fa-file-word"></i><span>Word to PDF</span></a>
+                        <a href="excel-to-pdf.html" class="tool-card"><i class="fas fa-file-excel"></i><span>Excel to PDF</span></a>
+                        <a href="ppt-to-pdf.html" class="tool-card"><i class="fas fa-file-powerpoint"></i><span>PowerPoint to PDF</span></a>
+                    </div>
+                </div>
+
+                <div class="tools-category">
+                    <h2 class="category-title"><i class="fas fa-image"></i> Image Tools</h2>
+                    <div class="tools-grid">
+                        <a href="compress-image.html" class="tool-card"><i class="fas fa-compress-arrows-alt"></i><span>Compress Image</span></a>
+                    </div>
+                </div>
+
+                <div class="tools-category">
+                    <h2 class="category-title"><i class="fas fa-info-circle"></i> About</h2>
+                    <div class="tools-grid">
+                        <a href="blog.html" class="tool-card"><i class="fas fa-newspaper"></i><span>Blog</span></a>
+                        <a href="changelog.html" class="tool-card"><i class="fas fa-list-ul"></i><span>Changelog</span></a>
+                        <a href="support.html" class="tool-card"><i class="fas fa-heart"></i><span>Support Us</span></a>
+                        <a href="donate.html" class="tool-card"><i class="fab fa-github"></i><span>Donate</span></a>
+                        <a href="privacy.html" class="tool-card"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></a>
+                        <a href="terms.html" class="tool-card"><i class="fas fa-file-contract"></i><span>Terms of Service</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="logo" style="justify-content:center;margin-bottom:28px;">
+                <img src="../assets/images/logo.png" alt="ZyncPDF" class="logo-img" style="filter: brightness(0) invert(1);">
+                <span class="logo-text" style="color:white;background:none;">ZyncPDF</span>
+            </div>
+            <p style="text-align:center;color:#94a3b8;">&copy; 2025 ZyncPDF. Open source, privacy-first PDF tools.</p>
+            <p style="text-align:center;color:#94a3b8;margin-top:16px;">ðŸ‘€ Total Visits: <span id="visit-count">0</span></p>
+        </div>
+    </footer>
+
+    <script>
+        let visitCount = localStorage.getItem('zyncpdf_visits');
+        if (!visitCount) visitCount = 41723;
+        else visitCount = parseInt(visitCount) + 1;
+        localStorage.setItem('zyncpdf_visits', visitCount);
+        document.getElementById('visit-count').textContent = visitCount.toLocaleString();
+
+        document.querySelectorAll('.faq-question').forEach(function(question) {
+            question.addEventListener('click', function() {
+                var item = question.parentElement;
+                item.classList.toggle('active');
+                var answer = item.querySelector('.faq-answer');
+                if (answer) answer.style.display = item.classList.contains('active') ? 'block' : 'none';
+            });
+            var answer = question.parentElement.querySelector('.faq-answer');
+            if (answer) answer.style.display = 'none';
+        });
+
+        var themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                if (window.themeManager) window.themeManager.toggle();
+            });
+        }
+    </script>
 </body>
 </html>

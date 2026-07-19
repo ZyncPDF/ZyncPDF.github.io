@@ -10,16 +10,47 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/assets/images/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/logo.png",
+      "src": "/assets/images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "business"],
+  "shortcuts": [
+    {
+      "name": "New Document",
+      "short_name": "New",
+      "description": "Create a new PDF document",
+      "url": "/?action=new",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Open File",
+      "short_name": "Open",
+      "description": "Open an existing PDF file",
+      "url": "/?action=open",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Merge PDF",
+      "short_name": "Merge",
+      "description": "Merge multiple PDF files",
+      "url": "/tools/merge-pdf.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Compress PDF",
+      "short_name": "Compress",
+      "description": "Compress PDF file size",
+      "url": "/tools/compress-pdf.html",
+      "icons": [{ "src": "/assets/images/logo.png", "sizes": "192x192" }]
     }
   ],
   "categories": ["productivity", "utilities", "business"],

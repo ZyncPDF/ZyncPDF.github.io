@@ -10,8 +10,11 @@ const DYNAMIC_CACHE = 'zyncpdf-dynamic-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/logo.png',
-  '/modern-styles.css',
+  '/assets/css/modern-styles.css',
+  '/assets/css/styles.css',
+  '/assets/js/theme-switcher.js',
+  '/assets/js/script.js',
+  '/assets/images/logo.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -36,7 +39,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', async (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
