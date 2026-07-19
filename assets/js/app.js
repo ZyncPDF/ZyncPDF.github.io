@@ -86,7 +86,7 @@
             html += `
                 <div class="category-section animate-fade-in-up" style="animation-delay: ${delay}ms">
                     <div class="category-header">
-                        <div class="category-icon"><i class="fas ${category.icon}"></i></div>
+                        <div class="category-icon"><i data-lucide="${category.icon}"></i></div>
                         <h2 class="category-title">${escapeHtml(category.name)}</h2>
                         <span class="category-count">${tools.length} tool${tools.length !== 1 ? 's' : ''}</span>
                     </div>
@@ -100,16 +100,18 @@
 
         grid.innerHTML = html;
         initSpotlight();
+        if (window.lucide) lucide.createIcons();
     }
 
     function renderCard(tool, delay) {
         const name = highlightText(tool.name, state.searchQuery);
         const desc = highlightText(tool.description, state.searchQuery);
         const isLarge = tool.popular ? 'bento-lg' : 'bento-md';
+        const iconName = (window.ZyncToolIcons && window.ZyncToolIcons[tool.id]) || window.ZyncToolIcons[tool.category] || 'tool';
 
         return `
             <a href="/tool.html?id=${tool.id}" class="bento-card ${isLarge} animate-fade-in-up" style="animation-delay: ${delay}ms" data-tool-id="${tool.id}">
-                <div class="bento-icon"><i class="fas ${tool.icon}"></i></div>
+                <div class="bento-icon"><i data-lucide="${iconName}"></i></div>
                 <div>
                     <div class="bento-title">${name}</div>
                     <div class="bento-desc">${desc}</div>
@@ -196,7 +198,8 @@
         if (!btn) return;
         const icon = btn.querySelector('i');
         if (icon) {
-            icon.className = theme === 'dark' ? 'fas fa-sun text-sm' : 'fas fa-moon text-sm';
+            icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+            if (window.lucide) lucide.createIcons();
         }
     }
 

@@ -150,19 +150,6 @@ body {
 }
 
 /* --- Card Inner --- */
-.bento-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  display: grid;
-  place-items: center;
-  background: rgba(99, 102, 241, 0.08);
-  color: var(--accent-light);
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  border: 1px solid rgba(99, 102, 241, 0.12);
-}
-
 .bento-title {
   font-size: 0.95rem;
   font-weight: 600;
@@ -445,12 +432,61 @@ body {
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* --- Lucide Icons --- */
+[data-lucide] {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+    pointer-events: none;
+}
+
+.bento-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: grid;
+    place-items: center;
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--accent-light);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(99, 102, 241, 0.12);
+}
+
+.bento-icon [data-lucide] {
+    width: 24px;
+    height: 24px;
+}
+
+.category-icon [data-lucide] {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- Buttons with icons --- */
+.btn-primary [data-lucide],
+.btn-secondary [data-lucide] {
+    width: 16px;
+    height: 16px;
+}
+
+/* --- Tool header icon --- */
+#tool-icon [data-lucide] {
+    width: 24px;
+    height: 24px;
+}
+
 /* --- Search highlight --- */
 mark {
-  background: rgba(99, 102, 241, 0.2);
-  color: inherit;
-  border-radius: 2px;
-  padding: 0 2px;
+    background: rgba(99, 102, 241, 0.2);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 2px;
 }
 
 /* --- Code / Textarea --- */

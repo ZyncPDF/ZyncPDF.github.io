@@ -57,7 +57,7 @@
                 <a href="/#tools" class="text-sm text-gray-400 hover:text-white transition-colors">All Tools</a>
                 <a href="/#categories" class="text-sm text-gray-400 hover:text-white transition-colors">Categories</a>
                 <button id="theme-toggle" class="text-sm text-gray-400 hover:text-white transition-colors" aria-label="Toggle theme">
-                    <i class="fas fa-moon"></i>
+                    <i data-lucide="moon" class="w-4 h-4"></i>
                 </button>
             </nav>
         </div>
@@ -69,7 +69,7 @@
             <div class="mb-8 animate-fade-in-up">
                 <div class="flex items-center gap-4 mb-2">
                     <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent text-xl">
-                        <i id="tool-icon" class="fas fa-cogs"></i>
+                        <i id="tool-icon" data-lucide="tool"></i>
                     </div>
                     <div>
                         <h1 id="tool-title" class="text-2xl md:text-3xl font-bold text-white tracking-tight">Tool Name</h1>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="flex flex-col items-center gap-4">
                             <button id="process-btn" class="btn-primary w-full sm:w-auto" disabled>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <i data-lucide="zap" class="w-4 h-4"></i>
                                 Process
                             </button>
                             <div id="progress-container" class="w-full max-w-md hidden">
@@ -174,7 +174,9 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="assets/js/registry-loader.js"></script>
+    <script src="assets/js/tool-registry.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -27,14 +27,14 @@
     }
 
     function getFileIcon(mimeType) {
-        if (!mimeType) return 'fa-file';
-        if (mimeType.includes('pdf')) return 'fa-file-pdf';
-        if (mimeType.includes('image')) return 'fa-file-image';
-        if (mimeType.includes('audio')) return 'fa-file-audio';
-        if (mimeType.includes('video')) return 'fa-file-video';
-        if (mimeType.includes('text') || mimeType.includes('json') || mimeType.includes('xml') || mimeType.includes('javascript')) return 'fa-file-alt';
-        if (mimeType.includes('zip') || mimeType.includes('compressed')) return 'fa-file-archive';
-        return 'fa-file';
+        if (!mimeType) return 'file';
+        if (mimeType.includes('pdf')) return 'file-text';
+        if (mimeType.includes('image')) return 'image';
+        if (mimeType.includes('audio')) return 'music';
+        if (mimeType.includes('video')) return 'video';
+        if (mimeType.includes('text') || mimeType.includes('json') || mimeType.includes('xml') || mimeType.includes('javascript')) return 'file-code';
+        if (mimeType.includes('zip') || mimeType.includes('compressed')) return 'archive';
+        return 'file';
     }
 
     function setStatus(message) {
@@ -81,17 +81,18 @@
         const icon = getFileIcon(file.type);
 
         item.innerHTML = `
-            <i class="fas ${icon} text-accent text-lg"></i>
+            <i data-lucide="${icon}" class="text-accent text-lg"></i>
             <div class="flex-1 min-w-0">
                 <div class="text-sm font-medium text-white truncate">${escapeHtml(file.name)}</div>
                 <div class="text-xs text-gray-500">${size}</div>
             </div>
             <button class="remove-file w-8 h-8 rounded-lg hover:bg-red-500/10 text-gray-500 hover:text-red-400 flex items-center justify-center transition-colors" data-name="${escapeHtml(file.name)}" data-size="${file.size}" data-modified="${file.lastModified}">
-                <i class="fas fa-times text-xs"></i>
+                <i data-lucide="x" class="text-xs"></i>
             </button>
         `;
 
         list.appendChild(item);
+        if (window.lucide) lucide.createIcons();
     }
 
     function removeFile(name, size, modified) {
@@ -128,30 +129,20 @@
 
         item.innerHTML = `
             <div class="flex items-center gap-3 min-w-0">
-                <i class="fas ${getFileIcon(type)} text-accent"></i>
+                <i data-lucide="${getFileIcon(type)}" class="text-accent"></i>
                 <div class="min-w-0">
                     <div class="text-sm font-medium text-white truncate">${escapeHtml(result.name)}</div>
                     <div class="text-xs text-gray-500">${size}${type ? ' • ' + escapeHtml(type) : ''}</div>
                 </div>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
-                ${result.url ? `<a href="${result.url}" download="${escapeHtml(result.name)}" class="btn-secondary text-xs py-2 px-3"><i class="fas fa-download mr-1.5"></i>Download</a>` : ''}
-                ${result.previewHtml ? `<button class="preview-btn btn-secondary text-xs py-2 px-3"><i class="fas fa-eye mr-1.5"></i>Preview</button>` : ''}
+                ${result.url ? `<a href="${result.url}" download="${escapeHtml(result.name)}" class="btn-secondary text-xs py-2 px-3"><i data-lucide="download" class="mr-1.5"></i>Download</a>` : ''}
+                ${result.previewHtml ? `<button class="preview-btn btn-secondary text-xs py-2 px-3"><i data-lucide="eye" class="mr-1.5"></i>Preview</button>` : ''}
             </div>
         `;
 
-        const previewBtn = item.querySelector('.preview-btn');
-        if (previewBtn && result.previewHtml) {
-            previewBtn.addEventListener('click', () => {
-                const modal = $('#preview-modal') || createPreviewModal();
-                const body = $('#preview-modal-body');
-                if (body) body.innerHTML = result.previewHtml;
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            });
-        }
-
         section.appendChild(item);
+        if (window.lucide) lucide.createIcons();
     }
 
     function createPreviewModal() {
@@ -163,7 +154,7 @@
                 <div class="flex items-center justify-between p-4 border-b border-white/5">
                     <h3 class="font-semibold text-white">Preview</h3>
                     <button id="preview-close-btn" class="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
-                        <i class="fas fa-times"></i>
+                        <i data-lucide="x"></i>
                     </button>
                 </div>
                 <div id="preview-modal-body" class="p-4 overflow-auto max-h-[70vh]"></div>
@@ -339,16 +330,20 @@
             return;
         }
 
-        container.innerHTML = related.map(t => `
+        container.innerHTML = related.map(t => {
+            const iconName = (window.ZyncToolIcons && window.ZyncToolIcons[t.id]) || window.ZyncToolIcons[t.category] || 'tool';
+            return `
             <a href="/tool.html?id=${t.id}" class="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-white/[0.02] border border-transparent hover:border-white/5 transition-all group">
                 <div class="w-8 h-8 rounded-lg bg-accent/8 border border-accent/12 flex items-center justify-center text-accent text-xs flex-shrink-0 group-hover:bg-accent/12 transition-colors">
-                    <i class="fas ${t.icon}"></i>
+                    <i data-lucide="${iconName}"></i>
                 </div>
                 <div class="min-w-0">
                     <div class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors truncate">${escapeHtml(t.name)}</div>
                 </div>
             </a>
-        `).join('');
+        `;
+        }).join('');
+        if (window.lucide) lucide.createIcons();
     }
 
     function setupToolPage() {
@@ -367,7 +362,12 @@
         document.title = `${toolConfig.name} — ZyncTools`;
         $('#tool-title').textContent = toolConfig.name;
         $('#tool-description').textContent = toolConfig.description;
-        $('#tool-icon').className = `fas ${toolConfig.icon}`;
+        const toolIconEl = $('#tool-icon');
+        if (toolIconEl) {
+            const iconName = (window.ZyncToolIcons && window.ZyncToolIcons[toolId]) || 'tool';
+            toolIconEl.setAttribute('data-lucide', iconName);
+            if (window.lucide) lucide.createIcons();
+        }
 
         const fileInput = $('#file-input');
         if (fileInput && toolConfig.accept) {

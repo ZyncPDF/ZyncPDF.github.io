@@ -57,7 +57,7 @@
                 <a href="/#tools" class="text-sm text-gray-400 hover:text-white transition-colors">All Tools</a>
                 <a href="/#categories" class="text-sm text-gray-400 hover:text-white transition-colors">Categories</a>
                 <button id="theme-toggle" class="text-sm text-gray-400 hover:text-white transition-colors" aria-label="Toggle theme">
-                    <i class="fas fa-moon"></i>
+                    <i data-lucide="moon" class="w-4 h-4"></i>
                 </button>
             </nav>
         </div>
@@ -69,7 +69,7 @@
             <div class="mb-8 animate-fade-in-up">
                 <div class="flex items-center gap-4 mb-2">
                     <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent text-xl">
-                        <i id="tool-icon" class="fas fa-search"></i>
+                        <i id="tool-icon" data-lucide="search"></i>
                     </div>
                     <div>
                         <h1 id="tool-title" class="text-2xl md:text-3xl font-bold text-white tracking-tight">SEO Tool</h1>
@@ -157,7 +157,9 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="assets/js/registry-loader.js"></script>
+    <script src="assets/js/tool-registry.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/seo-logic.js"></script>
 </body>
