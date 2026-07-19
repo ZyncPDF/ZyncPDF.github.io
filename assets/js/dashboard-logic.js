@@ -261,16 +261,11 @@
     /* --- Data Loading --- */
     async function loadRegistry() {
         try {
-            const [mainRes, newRes] = await Promise.all([
-                fetch('/registry.json', { cache: 'no-store' }),
-                fetch('/new-tools-registry.json', { cache: 'no-store' })
-            ]);
-            const mainData = mainRes.ok ? await mainRes.json() : { tools: [], categories: [] };
-            const newData = newRes.ok ? await newRes.json() : { tools: [], categories: [] };
-            const mainCategoryIds = new Set((mainData.categories || []).map(c => c.id));
-            const extraCategories = (newData.categories || []).filter(c => !mainCategoryIds.has(c.id));
-            state.tools = [...(mainData.tools || []), ...(newData.tools || [])];
-            state.categories = [...(mainData.categories || []), ...extraCategories];
+            const res = await fetch('/tools-database.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error('Failed to load tools database');
+            const data = await res.json();
+            state.tools = data.tools || [];
+            state.categories = data.categories || [];
         } catch (err) {
             console.error('Failed to load registry:', err);
             state.tools = [];

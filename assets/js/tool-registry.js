@@ -253,10 +253,14 @@ window.ZyncToolIcons = {
     'color-blindness-simulator': 'eye',
 
     // Fallback icons by category
-    'image-tools': 'image',
-    'text-code-tools': 'file-code',
-    'audio-video-tools': 'music',
-    'document-tools': 'file-text',
-    'dev-math-tools': 'code',
-    'seo-web-dev-tools': 'search'
+    'images': 'image',
+    'pdf': 'file-text',
+    'video': 'video',
+    'audio': 'music',
+    'text': 'type',
+    'code': 'code',
+    'math': 'calculator',
+    'dev': 'terminal',
+    'security': 'shield',
+    'ai': 'wand-magic-sparkles'
 };
