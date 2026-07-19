@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>ZyncTools — 300+ Privacy-First Utilities</title>
+    <title>ZyncTools — 300+ Privacy-First Utilities</title>
     <meta name="description" content="300+ free, privacy-first, client-side utilities. No uploads. No tracking. No registration.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%236366F1'>⚡</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,10 +18,6 @@
                     colors: {
                         slate: { 950: '#0F1115', 900: '#13151A', 850: '#1C1F26', 800: '#23262F', 700: '#2D313A' },
                         accent: { DEFAULT: '#6366F1', light: '#818CF8', dark: '#4F46E5' }
-                    },
-                    boxShadow: {
-                        'glow': '0 0 40px -10px rgba(99, 102, 241, 0.25)',
-                        'card': '0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 0 rgba(0,0,0,0.2)'
                     }
                 }
             }
@@ -58,7 +54,7 @@
                 <span class="text-lg font-bold tracking-tight text-white">ZyncTools</span>
             </a>
             <nav class="hidden md:flex items-center gap-8">
-                <a href="#tools" class="text-sm text-gray-400 hover:text-white transition-colors">Tools</a>
+                <a href="#dashboard" class="text-sm text-gray-400 hover:text-white transition-colors">Tools</a>
                 <a href="#categories" class="text-sm text-gray-400 hover:text-white transition-colors">Categories</a>
                 <a href="/pages/privacy.html" class="text-sm text-gray-400 hover:text-white transition-colors">Privacy</a>
                 <a href="/pages/support.html" class="text-sm text-gray-400 hover:text-white transition-colors">Support</a>
@@ -84,7 +80,7 @@
             <div class="mx-auto max-w-7xl px-6 text-center">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/5 border border-accent/10 text-accent text-xs font-medium mb-8">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    152 tools. Zero uploads. Zero tracking.
+                    300+ tools. Zero uploads. Zero tracking.
                 </div>
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
                     Utilities that respect<br class="hidden sm:block"> your privacy.
@@ -102,28 +98,17 @@
                 </div>
 
                 <!-- Category filters -->
-                <div id="category-filters" class="flex flex-wrap justify-center gap-2 mb-16">
+                <div id="category-filters" class="flex flex-wrap justify-center gap-2 mb-6">
                     <button data-category="all" class="cat-btn active px-4 py-2 rounded-xl text-sm font-medium bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-all">All Tools</button>
-                    <button data-category="image-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Images</button>
-                    <button data-category="text-code-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Text & Code</button>
-                    <button data-category="audio-video-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Audio / Video</button>
-                    <button data-category="document-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Documents</button>
-                    <button data-category="dev-math-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Dev & Math</button>
-                    <button data-category="seo-web-dev-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">SEO & Web</button>
-                    <button data-category="ai-image-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">AI Images</button>
-                    <button data-category="advanced-av-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Advanced AV</button>
-                    <button data-category="data-viz-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Data & Viz</button>
-                    <button data-category="privacy-security-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Privacy</button>
-                    <button data-category="fun-creative-tools" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium bg-slate-900 text-gray-400 border border-white/5 hover:border-white/10 hover:text-white transition-all">Fun & Creative</button>
                 </div>
             </div>
         </section>
 
-        <!-- Bento Grid -->
-        <section id="tools" class="pb-24">
+        <!-- Dashboard -->
+        <section id="dashboard" class="pb-24">
             <div class="mx-auto max-w-7xl px-6">
-                <div id="bento-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Dynamically rendered -->
+                <div id="category-sections">
+                    <!-- Dynamically rendered category sections -->
                 </div>
                 <div id="no-results" class="hidden text-center py-20">
                     <div class="text-gray-500 text-lg">No tools match your search.</div>
@@ -146,6 +131,6 @@
     <script src="assets/js/tool-registry.js"></script>
     <script src="assets/js/advanced-logic.js"></script>
     <script src="assets/js/ui-components.js"></script>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/dashboard-logic.js"></script>
 </body>
 </html>
